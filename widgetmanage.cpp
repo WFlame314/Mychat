@@ -1,13 +1,14 @@
 #include "widgetmanage.h"
 
-WidgetManage::WidgetManage(QWidget *parent) : QWidget(parent)
+WidgetManage::WidgetManage(GlobalData *basedata,Logfiles *log,QWidget *parent) : QWidget(parent)
 {
-
+    this->basedata = basedata;
+    this->log = log;
 }
 
 bool WidgetManage::open_Loginwindow()
 {
-    if((loginwindow = new LoginWidget()))
+    if((loginwindow = new LoginWidget(basedata,log)))
     {
         loginwindow->show();
         return true;

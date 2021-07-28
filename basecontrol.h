@@ -2,6 +2,7 @@
 #define BASECONTROL_H
 
 #include <QWidget>
+#include <QMessageBox>
 #include "globaldata.h"
 #include "widgetmanage.h"
 #include "logfiles.h"
@@ -18,13 +19,13 @@ public:
 
 private:
 
-    GlobalData *data;
+    GlobalData *basedata;
     WidgetManage *widgetmanager;
     Logfiles *log;
+
+
 public slots:
-    void logfile_open_fail();
-    void logdir_make_fail();
-    void log_ready();
+
 
 };
 #endif // BASECONTROL_H

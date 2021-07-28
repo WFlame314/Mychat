@@ -3,40 +3,30 @@
 BaseControl::BaseControl(QWidget *parent)
     : QWidget(parent)
 {
-    data = new GlobalData();
-    widgetmanager = new WidgetManage();
-    log = new Logfiles();
-    connect(log,SIGNAL(logfile_open_fail()),this,SLOT(logfile_open_fail()));
-    connect(log,SIGNAL(logdir_make_fail()),this,SLOT(logdir_make_fail()));
-    connect(log,SIGNAL(log_ready()),this,SLOT(log_ready()));
+    basedata = new GlobalData();
+    log = new Logfiles(basedata);
     log->init();
+    widgetmanager = new WidgetManage(basedata,log);
     if(widgetmanager->open_Loginwindow())
     {
-        if(data->get_Log_State())
+        if(basedata->get_Log_State())
         {
-            log->InsertLog("Info","loginwindow opened!");
+            log->info("LOGWINDOW OPENED!");
         }
+        else
+        {
+            QMessageBox::warning(this,"日志文件错误","日志文件打开失败！");
+        }
+    }else
+    {
+        log->error("LOGWINDOW OPEN FAILED!");
     }
 }
 
 BaseControl::~BaseControl()
 {
-    delete data;
+    log->info("ALL CLOSED!");
+    delete basedata;
     delete log;
     delete widgetmanager;
-}
-
-void BaseControl::logdir_make_fail()
-{
-    data->set_Log_State(false);
-}
-
-void BaseControl::logfile_open_fail()
-{
-    data->set_Log_State(false);
-}
-
-void BaseControl::log_ready()
-{
-    data->set_Log_State(true);
 }

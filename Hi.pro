@@ -1,4 +1,4 @@
-QT       += core gui network
+QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,14 +21,18 @@ SOURCES += \
     loginwidget.cpp \
     main.cpp \
     basecontrol.cpp \
-    widgetmanage.cpp
+    personlist.cpp \
+    widgetmanage.cpp \
+    Loading.cpp
 
 HEADERS += \
     basecontrol.h \
     globaldata.h \
     logfiles.h \
     loginwidget.h \
-    widgetmanage.h
+    personlist.h \
+    widgetmanage.h \
+    Loading.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

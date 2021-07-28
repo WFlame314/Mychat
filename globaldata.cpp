@@ -2,10 +2,15 @@
 
 GlobalData::GlobalData()
 {
+
+    srand(time(0));
     connect_state = false;
     login_state = false;
     online_state = 0;
     log_state = false;
+    user_db_state = false;
+
+    ID = rand()%10000;
 
 }
 
@@ -29,6 +34,18 @@ bool GlobalData::get_Log_State()
     return log_state;
 }
 
+int GlobalData::get_ID()
+{
+    return ID;
+}
+
+bool GlobalData::get_user_db_state()
+{
+    return user_db_state;
+}
+
+
+
 
 void GlobalData::set_Login_State(bool state)
 {
@@ -49,3 +66,17 @@ void GlobalData::set_Log_State(bool state)
 {
     log_state = state;
 }
+
+void GlobalData::set_User_Db_State(bool state)
+{
+    user_db_state = state;
+}
+
+
+
+
+
+
+
+
+

@@ -1,9 +1,9 @@
 #include "logfiles.h"
 
-Logfiles::Logfiles(QWidget *parent)
+Logfiles::Logfiles(GlobalData *basedata,QWidget *parent)
     : QWidget(parent)
 {
-
+    this->basedata = basedata;
 }
 
 Logfiles::~Logfiles()
@@ -24,20 +24,42 @@ void Logfiles::init()
         if(logfile->open(QIODevice::WriteOnly| QIODevice::Append))
         {
             out = new QTextStream(logfile);
-            InsertLog("Info","open logfile success!");
-            emit log_ready();
+            info("OPEN LOGFILE SUCCESS!");
+            basedata->set_Log_State(true);
         }else
         {
-            emit logfile_open_fail();
+            basedata->set_Log_State(false);
         }
     }else
     {
-        emit logdir_make_fail();
+        basedata->set_Log_State(false);
     }
 }
 
 void Logfiles::InsertLog(QString type, QString msg)
 {
-    cout<<QDateTime::currentDateTime().toString(Qt::ISODate)<<"  [ "<<type<<" ]:  "<<msg<<"\n";
-    *out<<QDateTime::currentDateTime().toString(Qt::ISODate)<<"  [ "<<type<<" ]:  "<<msg<<"\n";
+    cout<<"[ "
+        <<QDateTime::currentDateTime().toString(Qt::ISODate)
+        <<" ] "
+        <<basedata->get_ID()
+        <<" "
+        <<"  [ "<<type<<" ]:  "
+        <<msg.toUtf8()<<"\n";
+    *out<<"[ "
+        <<QDateTime::currentDateTime().toString(Qt::ISODate)
+        <<" ] "
+        <<basedata->get_ID()
+        <<" "
+        <<"  [ "<<type<<" ]:  "
+        <<msg.toUtf8()<<"\n";
+}
+
+void Logfiles::info(QString msg)
+{
+    InsertLog("INFO",msg);
+}
+
+void Logfiles::error(QString msg)
+{
+    InsertLog("ERROR",msg);
 }

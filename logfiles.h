@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QFile>
 #include <QDateTime>
+#include "globaldata.h"
 
 #define cout qDebug()
 
@@ -15,18 +16,20 @@ class Logfiles : public QWidget
 {
     Q_OBJECT
 public:
-    Logfiles(QWidget *parent = nullptr);
+    Logfiles(GlobalData *basedata,QWidget *parent = nullptr);
     ~Logfiles();
     void InsertLog(QString type,QString msg);
     void init();
+    void info(QString msg);
+    void error(QString msg);
 
+private:
     QFile *logfile;
     QTextStream *out;
+    GlobalData *basedata;
 
 signals:
-    void logfile_open_fail();
-    void logdir_make_fail();
-    void log_ready();
+
 
 };
 
