@@ -2,18 +2,21 @@
 #define LOGINWIDGET_H
 
 #include <QWidget>
+#include <QListWidget>
 #include <QPainter>
 #include <QtMath>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDir>
+#include <QFile>
 #include <QMouseEvent>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
 #include "globaldata.h"
 #include "logfiles.h"
+#include "personlist.h"
 
 namespace Ui {
 class LoginWidget;
@@ -49,6 +52,8 @@ private:
      */
     QPushButton *close_btn;
     QLabel *face_image;
+    PersonList *userlist;
+    QListWidget *box;
 
 
 public slots:

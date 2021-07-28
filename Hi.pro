@@ -21,6 +21,7 @@ SOURCES += \
     loginwidget.cpp \
     main.cpp \
     basecontrol.cpp \
+    person.cpp \
     personlist.cpp \
     widgetmanage.cpp \
     Loading.cpp
@@ -30,6 +31,7 @@ HEADERS += \
     globaldata.h \
     logfiles.h \
     loginwidget.h \
+    person.h \
     personlist.h \
     widgetmanage.h \
     Loading.h
@@ -41,3 +43,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 FORMS += \
     loginwidget.ui
+
+RESOURCES += \
+    QSS.qrc

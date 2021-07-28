@@ -7,6 +7,7 @@ BaseControl::BaseControl(QWidget *parent)
     log = new Logfiles(basedata);
     log->init();
     widgetmanager = new WidgetManage(basedata,log);
+
     if(widgetmanager->open_Loginwindow())
     {
         if(basedata->get_Log_State())

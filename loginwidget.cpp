@@ -18,6 +18,22 @@ LoginWidget::LoginWidget(GlobalData *basedata,Logfiles *log,QWidget *parent) :
 
     face_image = new QLabel(this);
 
+    box = new QListWidget(this);
+    box->setFixedSize(200,100);
+    userlist = new PersonList(box);
+    userlist->setFixedSize(box->width(),box->height());
+    userlist->move(0,0);
+
+    QFile stylefile(":/qss/userliststyle.qss");
+    stylefile.open(QFile::ReadOnly);
+    userlist->setStyleSheet(stylefile.readAll());
+    stylefile.close();
+    userlist->addgroup("已保存");
+    userlist->addgroup("未保存");
+    box->setStyleSheet("QListWidget{"
+                       "background: rgba(255,255,255,0.5);"
+                       "}");
+
     init();
 }
 
@@ -94,7 +110,7 @@ void LoginWidget::init_Userinfo()
             if(database.tables().contains("users"))
             {
                     basedata->set_User_Db_State(true);
-                    QString select_sql = "select account, passwordkey, state from users";
+                    QString select_sql = "select account, name, passwordkey, state from users";
                     if(!sql_query.exec(select_sql))
                     {
                         log->error(sql_query.lastError().text());
@@ -104,21 +120,32 @@ void LoginWidget::init_Userinfo()
                         while(sql_query.next())
                         {
                             QString account = sql_query.value(0).toString();
-                            QString passwordkey = sql_query.value(1).toString();
-                            qDebug()<<account<<passwordkey;
+                            QString name = sql_query.value(1).toString();
+                            QString passwordkey = sql_query.value(2).toString();
+                            int state = sql_query.value(3).toInt();
+                            qDebug()<<account<<passwordkey<<state;
+                            Person *user = new Person(account,name,passwordkey,state);
+                            if(passwordkey!="")
+                            {
+                                userlist->addperson("已保存",user);
+                            }else
+                            {
+                                userlist->addperson("未保存",user);
+                            }
+
                         }
-                        if(!sql_query.exec("INSERT INTO users VALUES('10001','adbaud8!084/da',1)"))
+                        /*if(!sql_query.exec("INSERT INTO users VALUES('10001','adbaud8!084/da',1)"))
                         {
                             qDebug() << sql_query.lastError();
                         }
                         else
                         {
                             qDebug() << "inserted Li!";
-                        }
+                        }*/
                     }
             }else
             {
-                QString create_sql = "create table users (account varchar(11) primary key, passwordkey varchar(50),state int)";
+                QString create_sql = "create table users (account varchar(11) primary key,name varchar(11), passwordkey varchar(50),state int)";
                 sql_query.prepare(create_sql);
                 if(!sql_query.exec())
                 {
@@ -130,6 +157,7 @@ void LoginWidget::init_Userinfo()
                     basedata->set_User_Db_State(true);
                     log->info("Table created!");
                 }
+
             }
 
 
