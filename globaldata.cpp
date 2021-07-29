@@ -9,6 +9,7 @@ GlobalData::GlobalData()
     online_state = 0;
     log_state = false;
     user_db_state = false;
+    remember_pass_state = false;
 
     ID = rand()%10000;
 
@@ -44,7 +45,10 @@ bool GlobalData::get_user_db_state()
     return user_db_state;
 }
 
-
+bool GlobalData::get_Remember_Pass_State()
+{
+    return remember_pass_state;
+}
 
 
 void GlobalData::set_Login_State(bool state)
@@ -72,7 +76,10 @@ void GlobalData::set_User_Db_State(bool state)
     user_db_state = state;
 }
 
-
+void GlobalData::set_Remember_Pass_State(bool state)
+{
+    remember_pass_state = state;
+}
 
 
 

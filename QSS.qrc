@@ -2,4 +2,39 @@
     <qresource prefix="/qss">
         <file>userliststyle.qss</file>
     </qresource>
+    <qresource prefix="/image/btn">
+        <file>res/image/btn/login_close.png</file>
+        <file>res/image/btn/login_close_hover.png</file>
+        <file>res/image/btn/login_close_pressed.png</file>
+        <file>res/image/btn/QR.png</file>
+        <file>res/image/btn/QR_hover.png</file>
+        <file>res/image/btn/remember.png</file>
+        <file>res/image/btn/remember_choose.png</file>
+        <file>res/image/btn/remember_select.png</file>
+        <file>res/image/btn/remember_select_choose.png</file>
+        <file>res/image/btn/show_user.png</file>
+        <file>res/image/btn/show_user_pressed.png</file>
+        <file>res/image/btn/show_user_select.png</file>
+        <file>res/image/btn/show_user_select_pressed.png</file>
+    </qresource>
+    <qresource prefix="/image/faces">
+        <file>res/image/faces/boy_1.png</file>
+        <file>res/image/faces/boy_2.png</file>
+        <file>res/image/faces/boy_3.png</file>
+        <file>res/image/faces/boy_4.png</file>
+        <file>res/image/faces/boy_5.png</file>
+        <file>res/image/faces/boy_6.png</file>
+        <file>res/image/faces/girl_1.png</file>
+        <file>res/image/faces/girl_2.png</file>
+        <file>res/image/faces/girl_3.png</file>
+        <file>res/image/faces/girl_4.png</file>
+        <file>res/image/faces/girl_5.png</file>
+        <file>res/image/faces/girl_6.png</file>
+    </qresource>
+    <qresource prefix="/image/icon">
+        <file>res/image/icon/password.png</file>
+        <file>res/image/icon/password_select.png</file>
+        <file>res/image/icon/user.png</file>
+        <file>res/image/icon/user_select.png</file>
+    </qresource>
 </RCC>

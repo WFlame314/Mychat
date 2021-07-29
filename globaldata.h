@@ -15,6 +15,7 @@ private:
     int online_state;//在线状态--->0:离线、1:在线、2:忙碌、3:隐身
     bool log_state;
     bool user_db_state;
+    bool remember_pass_state;
 
     /*
      * 标识变量
@@ -34,12 +35,14 @@ public:
     bool get_Log_State();
     int get_ID();
     bool get_user_db_state();
+    bool get_Remember_Pass_State();
 
     void set_Connect_State(bool state);
     void set_Login_State(bool state);
     void set_Online_State(int state);
     void set_Log_State(bool state);
     void set_User_Db_State(bool state);
+    void set_Remember_Pass_State(bool state);
 
 };
 

@@ -1,9 +1,11 @@
 #include "person.h"
+#include <QtDebug>
 
 Person::Person(QWidget *parent) : QWidget(parent)
 {
 
 }
+
 
 Person::Person(QString account,QString name,QString passwordkey,int state,QWidget *parent) : QWidget(parent)
 {
@@ -15,7 +17,13 @@ Person::Person(QString account,QString name,QString passwordkey,int state,QWidge
     name_label = new QLabel(this);
     account_label = new QLabel(this);
     delete_btn = new QPushButton(this);
+    connect(delete_btn,SIGNAL(clicked()),this,SLOT(delete_btn_clicked()));
     init_userlist_buddy();
+}
+
+void Person::delete_btn_clicked()
+{
+    qDebug() <<"delete";
 }
 
 void Person::init_userlist_buddy()
@@ -45,4 +53,25 @@ void Person::init_userlist_buddy()
                                  "background: rgba(0,0,0,0);"
                                  "color: rgb(50,50,50);"
                                  "}");
+}
+
+
+QString Person::get_name()
+{
+    return name;
+}
+
+QString Person::get_account()
+{
+    return account;
+}
+
+QString Person::get_passwordkey()
+{
+    return passwordkey;
+}
+
+int Person::get_state()
+{
+    return state;
 }

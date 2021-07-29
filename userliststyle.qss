@@ -11,7 +11,7 @@ QListWidget::item{
 }
  
 QListWidget::item:hover{
-    background:rgba(255,255,255,0)
+    background:rgba(200,200,200,0.5)
 }
  
 QListWidget::item:selected{
