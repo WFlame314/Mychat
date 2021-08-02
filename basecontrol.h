@@ -7,6 +7,7 @@
 #include "widgetmanage.h"
 #include "logfiles.h"
 
+
 class BaseControl : public QWidget
 {
     Q_OBJECT
@@ -25,7 +26,7 @@ private:
 
 
 public slots:
-
+    void trylogin_slot(int type);
 
 };
 #endif // BASECONTROL_H

@@ -27,12 +27,15 @@ private:
     QLabel *name_label;
     QLabel *account_label;
     QPushButton *delete_btn;
+
     QString passwordkey;
     QString account;
     QString name;
     int state;
 
+
 signals:
+    void deleteuser_btn_clicked(QString);
 
 public slots:
     void delete_btn_clicked();

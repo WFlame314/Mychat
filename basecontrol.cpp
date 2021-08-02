@@ -7,7 +7,7 @@ BaseControl::BaseControl(QWidget *parent)
     log = new Logfiles(basedata);
     log->init();
     widgetmanager = new WidgetManage(basedata,log);
-
+    connect(widgetmanager,SIGNAL(trylogin_signal(int)),this,SLOT(trylogin_slot(int)));
     if(widgetmanager->open_Loginwindow())
     {
         if(basedata->get_Log_State())
@@ -30,4 +30,9 @@ BaseControl::~BaseControl()
     delete basedata;
     delete log;
     delete widgetmanager;
+}
+
+void BaseControl::trylogin_slot(int type)
+{
+    cout<<basedata->get_user_info()->get_account()<<basedata->get_user_info()->get_name()<<basedata->get_user_info()->get_passwordkey()<<type;
 }

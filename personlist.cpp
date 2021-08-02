@@ -14,7 +14,6 @@ void PersonList::mousePressEvent(QMouseEvent *event)
     currentItem = this->itemAt(mapFromGlobal(QCursor::pos()));//鼠标位置的Item，不管右键左键都获取
     if(event->button()==Qt::LeftButton && currentItem!=NULL && personItemMap.find(currentItem)!=personItemMap.end())//如果点击的左键并且是点击的是人
     {
-        qDebug() <<"click";
         emit user_selected(personItemMap.find(currentItem).value());
     }
 }
@@ -44,6 +43,23 @@ void PersonList::addperson(QString groupname,Person *buddy)
     newItem->setSizeHint(QSize(this->width(), 50));
     this->setItemWidget(newItem, buddy); //将word赋给该newItem
     allMap.insert(newItem,currentItem);   //加进容器，key为好友，value为组
-    personsMap.insert(groupname,buddy);
+    personsMap.insert(buddy->get_account(),buddy);
     personItemMap.insert(newItem,buddy);
+    connect(buddy,SIGNAL(deleteuser_btn_clicked(QString)),this,SLOT(deleteuser_btn_clicked(QString)));
+}
+
+void PersonList::deleteuser_btn_clicked(QString account)
+{
+    if(personsMap.find(account) != personsMap.end())
+    {
+        emit user_delete(personsMap.find(account).value());
+    }
+}
+
+void PersonList::clearitem()
+{
+    allMap.clear();
+    groupMap.clear();
+    personsMap.clear();
+    personItemMap.clear();
 }

@@ -13,6 +13,7 @@ public:
     PersonList(QListWidget *parent = 0);
     void addgroup(QString);
     void addperson(QString groupname,Person *buddy);
+    void clearitem();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -26,6 +27,10 @@ private:
 
 signals:
     void user_selected(Person *user);
+    void user_delete(Person *user);
+
+public slots:
+    void deleteuser_btn_clicked(QString);
 
 };
 

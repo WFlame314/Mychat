@@ -23,7 +23,7 @@ Person::Person(QString account,QString name,QString passwordkey,int state,QWidge
 
 void Person::delete_btn_clicked()
 {
-    qDebug() <<"delete";
+    emit deleteuser_btn_clicked(this->account);
 }
 
 void Person::init_userlist_buddy()
@@ -39,7 +39,7 @@ void Person::init_userlist_buddy()
     name_label->setText(name);
     account_label->setText(account);
     face_image->setStyleSheet(QString("QLabel{"
-                                      "border-image: url(./files/All_user/image/faces/%1.png);"
+                                      "border-image: url(./files/All_user/image/faces/%1.jpg);"
                                       "border-radius: 20px;"
                                       "border: none;"
                                       "}").arg(account));
@@ -53,6 +53,16 @@ void Person::init_userlist_buddy()
                                  "background: rgba(0,0,0,0);"
                                  "color: rgb(50,50,50);"
                                  "}");
+    delete_btn->setStyleSheet("QPushButton{"
+                              "border-image: url(:/image/btn/res/image/btn/delete.png);"
+                              "border-radius: 10px transparent;"
+                              "}"
+                              "QPushButton:hover{"
+                              "border-image: url(:/image/btn/res/image/btn/delete_hover.png);"
+                              "}"
+                              "QPushButton:pressed{"
+                              "border-image: url(:/image/btn/res/image/btn/delete_pressed.png);"
+                              "}");
 }
 
 

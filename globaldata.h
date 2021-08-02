@@ -3,6 +3,8 @@
 
 
 #include <QWidget>
+#include <QIcon>
+#include "person.h"
 
 class GlobalData
 {
@@ -23,9 +25,11 @@ private:
     int ID; //用于日志中标识本次运行
     QString account;//账号
 
-
-
-
+    /*
+     * 资源
+     */
+    QIcon *LOGO;
+    Person *user;
 
 public:
     GlobalData();
@@ -36,6 +40,8 @@ public:
     int get_ID();
     bool get_user_db_state();
     bool get_Remember_Pass_State();
+    QIcon get_LOGO();
+    Person * get_user_info();
 
     void set_Connect_State(bool state);
     void set_Login_State(bool state);
@@ -43,6 +49,7 @@ public:
     void set_Log_State(bool state);
     void set_User_Db_State(bool state);
     void set_Remember_Pass_State(bool state);
+    void set_user_info(Person *user);
 
 };
 

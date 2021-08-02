@@ -16,6 +16,9 @@
         <file>res/image/btn/show_user_pressed.png</file>
         <file>res/image/btn/show_user_select.png</file>
         <file>res/image/btn/show_user_select_pressed.png</file>
+        <file>res/image/btn/delete_hover.png</file>
+        <file>res/image/btn/delete.png</file>
+        <file>res/image/btn/delete_pressed.png</file>
     </qresource>
     <qresource prefix="/image/faces">
         <file>res/image/faces/boy_1.png</file>
@@ -36,5 +39,7 @@
         <file>res/image/icon/password_select.png</file>
         <file>res/image/icon/user.png</file>
         <file>res/image/icon/user_select.png</file>
+        <file>res/image/icon/mask.png</file>
+        <file>res/image/icon/hi.png</file>
     </qresource>
 </RCC>

@@ -20,6 +20,10 @@ private:
     Logfiles *log;
 
 signals:
+    void trylogin_signal(int type);
+
+public slots:
+    void trylogin_slot(int type);
 
 };
 

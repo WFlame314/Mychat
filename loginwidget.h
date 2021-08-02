@@ -17,9 +17,12 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
+#include <QGraphicsDropShadowEffect>
 #include "globaldata.h"
 #include "logfiles.h"
 #include "personlist.h"
+#include "Loading.h"
+#include "mytools.h"
 
 namespace Ui {
 class LoginWidget;
@@ -37,6 +40,8 @@ public:
     void init_Pos();
     void init_Style();
     void init_Userinfo();
+    void start_loading();
+    void stop_loading();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -55,6 +60,9 @@ private:
     QAction *passwordAction;
     bool show_user;
     bool remember_pass;
+    int model;
+    QImage faceimage;
+    int logintype;
 
     /*
      * 窗口中组件
@@ -69,6 +77,9 @@ private:
     QPushButton *login_btn;
     QPushButton *show_user_list_btn;
     QPushButton *remember_btn;
+    Loading *loading_flash;
+    QLabel *note;
+    //QRcode *qrcode;
 
 
 public slots:
@@ -76,8 +87,13 @@ public slots:
     void user_selected(Person *user);
     void show_user_btn_clicked();
     void remember_btn_clicked();
+    void login_btn_clicked();
+    void user_delete(Person *user);
+    void user_QRcode();
 
 
+signals:
+    void trylogin(int type);
 };
 
 #endif // LOGINWIDGET_H

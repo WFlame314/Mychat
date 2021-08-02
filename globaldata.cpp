@@ -10,7 +10,7 @@ GlobalData::GlobalData()
     log_state = false;
     user_db_state = false;
     remember_pass_state = false;
-
+    LOGO = new QIcon(":/image/icon/res/image/icon/hi.png");
     ID = rand()%10000;
 
 }
@@ -50,6 +50,18 @@ bool GlobalData::get_Remember_Pass_State()
     return remember_pass_state;
 }
 
+QIcon GlobalData::get_LOGO()
+{
+    return *LOGO;
+}
+
+Person* GlobalData::get_user_info()
+{
+    return user;
+}
+
+
+
 
 void GlobalData::set_Login_State(bool state)
 {
@@ -81,7 +93,10 @@ void GlobalData::set_Remember_Pass_State(bool state)
     remember_pass_state = state;
 }
 
-
+void GlobalData::set_user_info(Person *user)
+{
+    this->user = user;
+}
 
 
 
