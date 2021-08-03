@@ -19,6 +19,8 @@
         <file>res/image/btn/delete_hover.png</file>
         <file>res/image/btn/delete.png</file>
         <file>res/image/btn/delete_pressed.png</file>
+        <file>res/image/btn/edit.png</file>
+        <file>res/image/btn/edit_hover.png</file>
     </qresource>
     <qresource prefix="/image/faces">
         <file>res/image/faces/boy_1.png</file>

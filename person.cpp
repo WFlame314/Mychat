@@ -21,6 +21,18 @@ Person::Person(QString account,QString name,QString passwordkey,int state,QWidge
     init_userlist_buddy();
 }
 
+Person::Person(QString account,QString passwordkey,int state,QWidget *parent) : QWidget(parent)
+{
+    this->account = account;
+    this->state = state;
+    this->passwordkey = passwordkey;
+    face_image = new QLabel(this);
+    name_label = new QLabel(this);
+    account_label = new QLabel(this);
+    delete_btn = new QPushButton(this);
+    init_userlist_buddy();
+}
+
 void Person::delete_btn_clicked()
 {
     emit deleteuser_btn_clicked(this->account);
@@ -84,4 +96,19 @@ QString Person::get_passwordkey()
 int Person::get_state()
 {
     return state;
+}
+
+void Person::set_name(QString name)
+{
+    this->name = name;
+}
+
+void Person::set_password(QString password)
+{
+    passwordkey = password;
+}
+
+void Person::set_account(QString account)
+{
+    this->account = account;
 }

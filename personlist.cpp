@@ -63,3 +63,13 @@ void PersonList::clearitem()
     personsMap.clear();
     personItemMap.clear();
 }
+
+bool PersonList::finduser(QString account)
+{
+    if(personsMap.find(account)!=personsMap.end())
+    {
+        emit user_selected(personsMap.find(account).value());
+        return true;
+    }
+    return false;
+}

@@ -10,7 +10,7 @@ bool WidgetManage::open_Loginwindow()
 {
     if((loginwindow = new LoginWidget(basedata,log)))
     {
-        connect(loginwindow,SIGNAL(trylogin(int)),this,SLOT(trylogin_slot(int)));
+        connect(loginwindow,SIGNAL(trylogin(int,bool)),this,SLOT(trylogin_slot(int,bool)));
         cout<<"yes";
         loginwindow->show();
         return true;
@@ -18,7 +18,18 @@ bool WidgetManage::open_Loginwindow()
     return false;
 }
 
-void WidgetManage::trylogin_slot(int type)
+void WidgetManage::trylogin_slot(int type,bool ifremember)
 {
-    emit trylogin_signal(type);
+    emit trylogin_signal(type,ifremember);
+}
+
+void WidgetManage::sendinfo_to_loginwindow(int type, QString msg)
+{
+    if(loginwindow != nullptr)
+    {
+        loginwindow->getinfo(type,msg);
+    }else
+    {
+        log->error("Loginwindow does not open!");
+    }
 }

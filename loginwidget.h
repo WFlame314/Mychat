@@ -18,6 +18,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QGraphicsDropShadowEffect>
+#include <QTimer>
 #include "globaldata.h"
 #include "logfiles.h"
 #include "personlist.h"
@@ -42,6 +43,7 @@ public:
     void init_Userinfo();
     void start_loading();
     void stop_loading();
+    void getinfo(int type,QString msg);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
@@ -63,6 +65,9 @@ private:
     int model;
     QImage faceimage;
     int logintype;
+    QTimer *account_timer;
+    QTimer *connect_timer;
+    int login_process;
 
     /*
      * 窗口中组件
@@ -83,6 +88,10 @@ private:
 
 
 public slots:
+    void account_timer_Timeout();
+    void connect_timer_Timeout();
+    void account_changed(const QString &);
+    void password_changed(const QString &);
     void close_window();
     void user_selected(Person *user);
     void show_user_btn_clicked();
@@ -93,7 +102,7 @@ public slots:
 
 
 signals:
-    void trylogin(int type);
+    void trylogin(int type,bool ifremember);
 };
 
 #endif // LOGINWIDGET_H

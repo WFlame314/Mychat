@@ -12,13 +12,17 @@ class Person : public QWidget
 public:
     explicit Person(QWidget *parent = nullptr);
     Person(QString account,QString name,QString passwordkey,int state,QWidget *parent = nullptr);
-
+    Person(QString account,QString passwordkey,int state,QWidget *parent = nullptr);
 
     void init_userlist_buddy();
     QString get_account();
     QString get_name();
     QString get_passwordkey();
     int get_state();
+
+    void set_name(QString name);
+    void set_password(QString password);
+    void set_account(QString account);
 
 
 

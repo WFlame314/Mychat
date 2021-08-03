@@ -20,6 +20,11 @@ LoginWidget::LoginWidget(GlobalData *basedata,Logfiles *log,QWidget *parent) :
     show_user = false;
     remember_pass = false;
 
+    account_timer = new QTimer(this);
+    connect(account_timer,SIGNAL(timeout()), this, SLOT(account_timer_Timeout()));
+    connect_timer = new QTimer(this);
+    connect(connect_timer,&QTimer::timeout,this,&LoginWidget::connect_timer_Timeout);
+
     //关闭按钮
     close_btn = new QPushButton(this);
     connect(close_btn,SIGNAL(clicked()),this,SLOT(close_window()));
@@ -41,7 +46,9 @@ LoginWidget::LoginWidget(GlobalData *basedata,Logfiles *log,QWidget *parent) :
     password_edit = new QLineEdit(this);
     passwordAction = new QAction(password_edit);
     connect(account_edit,SIGNAL(returnPressed()),password_edit,SLOT(setFocus()));
+    connect(account_edit,&QLineEdit::textChanged,this,&LoginWidget::account_changed);
     connect(password_edit,SIGNAL(returnPressed()),this,SLOT(login_btn_clicked()));
+    connect(password_edit,&QLineEdit::textChanged,this,&LoginWidget::password_changed);
 
     //登录按钮
     login_btn = new QPushButton(this);
@@ -60,6 +67,7 @@ LoginWidget::LoginWidget(GlobalData *basedata,Logfiles *log,QWidget *parent) :
 
     note = new QLabel(this);
     note->hide();
+    note->setAlignment(Qt::AlignCenter);
 
     //保存的用户
     box = new QListWidget(this);
@@ -213,8 +221,10 @@ void LoginWidget::init_Style()
                              "background-color:rgb(10,160,243);"
                              "}"
                              "QPushButton:disabled{"
-                             "background-color:rgb(17,174,243);"
+                             "background-color:rgb(240,25,25);"
                              "color: rgb(0,0,0);"
+                             "font-size: 15px;"
+                             "font-weight: 400;"
                              "}");
     show_user_list_btn->setStyleSheet("QPushButton{"
                                       "border-image: url(:/image/btn/res/image/btn/show_user.png);"
@@ -256,7 +266,7 @@ void LoginWidget::init_Userinfo()
         }
         else
         {
-            log->info("Connected to database.");
+            log->info("Loginwindow Connected to database.");
             QSqlQuery sql_query(database);
             if(database.tables().contains("users"))
             {
@@ -287,14 +297,6 @@ void LoginWidget::init_Userinfo()
                             }
 
                         }
-                        /*if(!sql_query.exec("INSERT INTO users VALUES('10001','测试1','adbaud8!084/da',1)"))
-                        {
-                            qDebug() << sql_query.lastError();
-                        }
-                        else
-                        {
-                            qDebug() << "inserted Li!";
-                        }*/
                     }
             }else
             {
@@ -312,8 +314,10 @@ void LoginWidget::init_Userinfo()
                 }
 
             }
+            database.close();
         }
     }
+
 }
 
 void LoginWidget::start_loading()
@@ -341,6 +345,7 @@ void LoginWidget::stop_loading()
 {
     delete loading_flash;
     loading_flash=NULL;
+    note->hide();
     account_edit->show();
     password_edit->show();
     show_user_list_btn->show();
@@ -401,6 +406,8 @@ bool LoginWidget::eventFilter(QObject *object, QEvent *event)
     {
         if (event->type() == QEvent::FocusIn)
         {
+            login_btn->setEnabled(true);
+            login_btn->setText("登  录");
             userAction->setIcon(QIcon(":/image/icon/res/image/icon/user_select.png"));
             account_edit->setStyleSheet("QLineEdit{"
                                         "background-color: rgba(255,255,255,0.5);"
@@ -456,6 +463,8 @@ bool LoginWidget::eventFilter(QObject *object, QEvent *event)
     {
         if (event->type() == QEvent::FocusIn)
         {
+            login_btn->setEnabled(true);
+            login_btn->setText("登  录");
             passwordAction->setIcon(QIcon(":/image/icon/res/image/icon/password_select.png"));
             password_edit->setStyleSheet("QLineEdit{"
                                          "background-color: rgba(255,255,255,0.5);"
@@ -480,6 +489,7 @@ bool LoginWidget::eventFilter(QObject *object, QEvent *event)
                                                 "border-radius: 10px transparent;"
                                                 "}");
             }
+            password_edit->selectAll();
         }
         if(event->type() == QEvent::FocusOut)
         {
@@ -502,9 +512,9 @@ bool LoginWidget::eventFilter(QObject *object, QEvent *event)
             }else
             {
                 remember_btn->setStyleSheet("QPushButton{"
-                                                "border-image: url(:/image/btn/res/image/btn/remember_choose.png);"
-                                                "border-radius: 10px transparent;"
-                                                "}");
+                                            "border-image: url(:/image/btn/res/image/btn/remember_choose.png);"
+                                            "border-radius: 10px transparent;"
+                                            "}");
             }
         }
     }
@@ -531,17 +541,23 @@ void LoginWidget::user_selected(Person *user)
         remember_pass = true;
         password_edit->setText("--------");
         logintype = 1;
+        login_btn->setFocus();
+        remember_btn->setStyleSheet("QPushButton{"
+                                    "border-image: url(:/image/btn/res/image/btn/remember_choose.png);"
+                                    "border-radius: 10px transparent;"
+                                    "}");
     }else
     {
         remember_pass = false;
         password_edit->setText("");
-        logintype = 0;
+        logintype = 2;
+        QEvent *ev = new QEvent(QEvent::FocusIn);
+        eventFilter(password_edit,ev);
+        password_edit->setFocus();
     }
     faceimage.load(QString("./files/All_user/image/faces/%1.jpg").arg(user->get_account()));
     face_image->setPixmap(pix.fromImage(faceimage));
-    QEvent *ev = new QEvent(QEvent::FocusIn);
-    eventFilter(password_edit,ev);
-    password_edit->setFocus();
+
 }
 
 void LoginWidget::show_user_btn_clicked()
@@ -587,10 +603,37 @@ void LoginWidget::remember_btn_clicked()
 
 void LoginWidget::login_btn_clicked()
 {
-    start_loading();
-    note->setText("正在连接到服务器...");
-    note->show();
-    emit trylogin(logintype);
+    if(account_edit->text()!="")
+    {
+        if(password_edit->text()!="")
+        {
+            if(logintype == 0)
+            {
+                Person *user = new Person(account_edit->text(),password_edit->text(),1);
+                basedata->set_user_info(user);
+            }else if(logintype == 2)
+            {
+                basedata->get_user_info()->set_password(password_edit->text());
+            }
+            start_loading();
+            note->setText("正在连接到服务器...");
+            note->show();
+            login_process = 1;
+            connect_timer->start(30000);
+            emit trylogin(logintype,remember_pass);
+        }
+        else
+        {
+            login_btn->setText("密码不能为空！");
+            login_btn->setDisabled(true);
+        }
+    }else
+    {
+        login_btn->setText("用户名不能为空！");
+        login_btn->setDisabled(true);
+
+    }
+
 }
 
 void LoginWidget::user_delete(Person *user)
@@ -624,37 +667,153 @@ void LoginWidget::user_delete(Person *user)
 
 void LoginWidget::user_QRcode()
 {
-    if(model == 1)
+    if(loading_flash == NULL)
     {
-        account_edit->hide();
-        password_edit->hide();
-        show_user_list_btn->hide();
-        remember_btn->hide();
-        login_btn->hide();
-        this->setFixedSize(250,250);
-        face_image->setFixedSize(150,150);
-        face_image->move(this->width()/2-face_image->width()/2,this->height()/2-face_image->height()/2);
-        QPixmap qrPixmap;
-        int width = face_image->width();
-        int height = face_image->height();
-        MyTools::GernerateQRCode("http://www.baidu.com?id=dakdjkadbad8a7d9adsndlkadnalkdadaod900adska", qrPixmap, 10);
-        qrPixmap = qrPixmap.scaled(QSize(width, height),
-                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        face_image->setPixmap(qrPixmap);
-        model = 2;
+        if(model == 1)
+        {
+            account_edit->hide();
+            password_edit->hide();
+            show_user_list_btn->hide();
+            remember_btn->hide();
+            login_btn->hide();
+            this->setFixedSize(250,250);
+            face_image->setFixedSize(150,150);
+            face_image->move(this->width()/2-face_image->width()/2,this->height()/2-face_image->height()/2);
+            QPixmap qrPixmap;
+            int width = face_image->width();
+            int height = face_image->height();
+            MyTools::GernerateQRCode("http://www.baidu.com?id=dakdjkadbad8a7d9adsndlkadnalkdadaod900adska", qrPixmap, 10);
+            qrPixmap = qrPixmap.scaled(QSize(width, height),
+                                       Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            face_image->setPixmap(qrPixmap);
+            QR_btn->setStyleSheet("QPushButton{"
+                                  "border-image: url(:/image/btn/res/image/btn/edit.png);"
+                                  "}"
+                                  "QPushButton:hover{"
+                                  "border-image: url(:/image/btn/res/image/btn/edit_hover.png);"
+                                  "}");
+            model = 2;
+        }else
+        {
+            account_edit->show();
+            password_edit->show();
+            show_user_list_btn->show();
+            remember_btn->show();
+            login_btn->show();
+            this->setFixedSize(250,300);
+            face_image->setFixedSize(80,80);
+            face_image->move(this->width()/2-face_image->width()/2,60);
+            face_image->setPixmap(pix.fromImage(faceimage));
+            QR_btn->setStyleSheet("QPushButton{"
+                                  "border-image: url(:/image/btn/res/image/btn/QR.png);"
+                                  "}"
+                                  "QPushButton:hover{"
+                                  "border-image: url(:/image/btn/res/image/btn/QR_hover.png);"
+                                  "}");
+            model = 1;
+        }
+    }
+
+}
+
+void LoginWidget::account_timer_Timeout()
+{
+    if(account_timer->isActive()){
+        QString account = account_edit->text();
+        QFile temp(QString("./files/All_user/image/faces/%1.jpg").arg(account));
+        if(temp.exists())
+        {
+            faceimage.load(temp.fileName());
+            face_image->setPixmap(pix.fromImage(faceimage));
+        }else
+        {
+            faceimage.load(":/image/faces/res/image/faces/boy_1.png");
+            face_image->setPixmap(pix.fromImage(faceimage));
+        }
+        if(userlist->finduser(account) != true)
+        {
+            logintype = 0;
+            password_edit->setText("");
+        }
+        basedata->get_user_info()->set_account(account);
+        account_timer->stop();
+    }
+}
+
+void LoginWidget::connect_timer_Timeout()
+{
+    if(connect_timer->isActive())
+    {
+        if(login_process == 1)
+        {
+            stop_loading();
+            login_btn->setText("服务器连接失败");
+            login_btn->setDisabled(true);
+        }else if(login_process == 2)
+        {
+            stop_loading();
+            login_btn->setText("服务器通信超时");
+            login_btn->setDisabled(true);
+        }
+    }
+    connect_timer->stop();
+}
+
+void LoginWidget::account_changed(const QString &)
+{
+    if(show_user)
+    {
+        show_user = false;
+        show_user_list_btn->setStyleSheet("QPushButton{"
+                                          "border-image: url(:/image/btn/res/image/btn/show_user_select.png);"
+                                          "border-radius: 10px transparent;"
+                                          "}");
+        box->hide();
+    }
+    //设置输入延迟检查，等待用户输入完全后在查找头像。
+    account_timer->start(300);
+    /*if(account_timer->isActive())
+    {
+        account_timer->start(250);
     }else
     {
-        account_edit->show();
-        password_edit->show();
-        show_user_list_btn->show();
-        remember_btn->show();
-        login_btn->show();
-        this->setFixedSize(250,300);
-        face_image->setFixedSize(80,80);
-        face_image->move(this->width()/2-face_image->width()/2,60);
-        face_image->setPixmap(pix.fromImage(faceimage));
-        model = 1;
+        account_timer->start(250);
+    }*/
+
+}
+
+void LoginWidget::password_changed(const QString &)
+{
+    if(logintype==1)
+    {
+        logintype = 2;
     }
 }
 
 
+void LoginWidget::getinfo(int type, QString msg)
+{
+    if(type == 1)
+    {
+        connect_timer->stop();
+        note->setText("正在验证身份...");
+        login_process = 2;
+        connect_timer->start(10000);
+    }else if(type == 2)
+    {
+        connect_timer->stop();
+        stop_loading();
+        if(msg== "wrong_password")
+        {
+            login_btn->setText("密码错误");
+            login_btn->setDisabled(true);
+        }else if(msg == "wrong_account")
+        {
+            login_btn->setText("用户名不存在");
+            login_btn->setDisabled(true);
+        }else if(msg == "login_success")
+        {
+            cout<<"登录成功";
+        }
+    }
+}

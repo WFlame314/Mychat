@@ -14,16 +14,18 @@ public:
 
     bool open_Loginwindow();
 
+    void sendinfo_to_loginwindow(int type,QString msg="");
+
 private:
     LoginWidget *loginwindow;
     GlobalData *basedata;
     Logfiles *log;
 
 signals:
-    void trylogin_signal(int type);
+    void trylogin_signal(int type,bool ifremember);
 
 public slots:
-    void trylogin_slot(int type);
+    void trylogin_slot(int type,bool ifremember);
 
 };
 

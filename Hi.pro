@@ -26,6 +26,7 @@ SOURCES += \
     mytools.cpp \
     person.cpp \
     personlist.cpp \
+    tcpserver.cpp \
     widgetmanage.cpp \
     Loading.cpp
 
@@ -38,6 +39,7 @@ HEADERS += \
     person.h \
     personlist.h \
     qrencode.h \
+    tcpserver.h \
     widgetmanage.h \
     Loading.h
 

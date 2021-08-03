@@ -14,6 +14,7 @@ public:
     void addgroup(QString);
     void addperson(QString groupname,Person *buddy);
     void clearitem();
+    bool finduser(QString account);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
