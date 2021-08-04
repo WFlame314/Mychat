@@ -49,10 +49,13 @@ void BaseControl::trylogin_slot(int type,bool ifremember)
 void BaseControl::connected_to_server_login()
 {
     cout<<"connected";
-    widgetmanager->sendinfo_to_loginwindow(1);
     QJsonObject data;
+    widgetmanager->sendinfo_to_loginwindow(1,data);
     data.insert("account",basedata->get_user_info()->get_account());
+    data.insert("uuid",basedata->get_uuid());
+    data.insert("hostname",QHostInfo::localHostName());
     data.insert("password",basedata->get_user_info()->get_passwordkey());
+    data.insert("logintype",basedata->get_Login_Type());
     data.insert("loginstate",basedata->get_user_info()->get_state());
     data.insert("ifremember",ifremember);
     QJsonObject body;
@@ -60,6 +63,7 @@ void BaseControl::connected_to_server_login()
     body.insert("data",data);
     QJsonDocument msg;
     msg.setObject(body);
+    log->info(QString("try login /n/t---->"+msg.toJson(QJsonDocument::Compact)).toUtf8());
     login_socket->write(char(0)+msg.toJson(QJsonDocument::Compact)+char(1));
 }
 
@@ -77,11 +81,21 @@ void BaseControl::datareceved_login(QString msg,int length)
     QJsonObject data = body["data"].toObject();
     if(body["type"].toString()=="login_return")
     {
-        if(data["state"].toString() != "login_success")
+        if(data["state"].toString() != "login_success" && data["state"].toString() != "key_login_success" )
         {
             login_socket->disconnectFromHost();
+            widgetmanager->sendinfo_to_loginwindow(2,data);
+        }else
+        {
+            if(data["state"].toString() == "key_login_success")
+            {
+                widgetmanager->sendinfo_to_loginwindow(3,data);
+            }else
+            {
+                widgetmanager->sendinfo_to_loginwindow(4,data);
+            }
         }
-        widgetmanager->sendinfo_to_loginwindow(2,data["state"].toString());
+
     }
     cout<<msg<<length;
 }

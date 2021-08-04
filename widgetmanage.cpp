@@ -23,7 +23,7 @@ void WidgetManage::trylogin_slot(int type,bool ifremember)
     emit trylogin_signal(type,ifremember);
 }
 
-void WidgetManage::sendinfo_to_loginwindow(int type, QString msg)
+void WidgetManage::sendinfo_to_loginwindow(int type, QJsonObject msg)
 {
     if(loginwindow != nullptr)
     {

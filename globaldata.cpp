@@ -7,11 +7,13 @@ GlobalData::GlobalData()
     connect_state = false;
     login_state = false;
     online_state = 0;
+    login_type = 0;
     log_state = false;
     user_db_state = false;
     remember_pass_state = false;
     LOGO = new QIcon(":/image/icon/res/image/icon/hi.png");
     ID = rand()%10000;
+    user = new Person();
 
 }
 
@@ -60,7 +62,25 @@ Person* GlobalData::get_user_info()
     return user;
 }
 
+int GlobalData::get_Login_Type()
+{
+    return login_type;
+}
 
+QString GlobalData::get_uuid()
+{
+    QString cmd = "wmic csproduct get uuid";
+    QProcess p;
+    p.start(cmd);
+    p.waitForFinished();
+    QString result = QString::fromLocal8Bit(p.readAllStandardOutput());
+    QStringList list = cmd.split(" ");
+    result = result.remove(list.last(), Qt::CaseInsensitive);
+    result = result.replace("\r", "");
+    result = result.replace("\n", "");
+    result = result.simplified();
+    return result;
+}
 
 
 void GlobalData::set_Login_State(bool state)
@@ -98,6 +118,10 @@ void GlobalData::set_user_info(Person *user)
     this->user = user;
 }
 
+void GlobalData::set_Login_Type(int type)
+{
+    login_type = type;
+}
 
 
 

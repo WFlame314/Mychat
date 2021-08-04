@@ -536,6 +536,7 @@ void LoginWidget::user_selected(Person *user)
                                       "}");
     box->hide();
     account_edit->setText(user->get_account());
+
     if(user->get_passwordkey()!="")
     {
         remember_pass = true;
@@ -546,6 +547,7 @@ void LoginWidget::user_selected(Person *user)
                                     "border-image: url(:/image/btn/res/image/btn/remember_choose.png);"
                                     "border-radius: 10px transparent;"
                                     "}");
+        basedata->set_Login_Type(1);
     }else
     {
         remember_pass = false;
@@ -761,6 +763,8 @@ void LoginWidget::connect_timer_Timeout()
 
 void LoginWidget::account_changed(const QString &)
 {
+    basedata->set_Login_Type(0);
+
     if(show_user)
     {
         show_user = false;
@@ -784,6 +788,7 @@ void LoginWidget::account_changed(const QString &)
 
 void LoginWidget::password_changed(const QString &)
 {
+    basedata->set_Login_Type(0);
     if(logintype==1)
     {
         logintype = 2;
@@ -791,8 +796,9 @@ void LoginWidget::password_changed(const QString &)
 }
 
 
-void LoginWidget::getinfo(int type, QString msg)
+void LoginWidget::getinfo(int type, QJsonObject msg)
 {
+
     if(type == 1)
     {
         connect_timer->stop();
@@ -802,18 +808,114 @@ void LoginWidget::getinfo(int type, QString msg)
     }else if(type == 2)
     {
         connect_timer->stop();
-        stop_loading();
-        if(msg== "wrong_password")
+        if(msg["state"].toString()== "wrong_password")
         {
+            stop_loading();
             login_btn->setText("密码错误");
             login_btn->setDisabled(true);
-        }else if(msg == "wrong_account")
+        }else if(msg["state"].toString() == "wrong_account")
         {
+            stop_loading();
             login_btn->setText("用户名不存在");
             login_btn->setDisabled(true);
-        }else if(msg == "login_success")
+        }
+    }else if(type == 3)
+    {
+        connect_timer->stop();
+        QDir dir;
+        if(dir.mkpath("./Datas/All_user"))
         {
-            cout<<"登录成功";
+            if (QSqlDatabase::contains("all_user_connection"))
+            {
+                database = QSqlDatabase::database("all_user_connection");
+            }
+            else
+            {
+                database = QSqlDatabase::addDatabase("QSQLITE","all_user_connection");
+                database.setDatabaseName("./Datas/All_user/Login_User_DataBase.db");
+                database.setUserName("root");
+                database.setPassword("AdU-Y4pVWC4ZeTb");
+            }
+
+            if (!database.open())
+            {
+                log->error("Failed to connect database.\n\t\t"+database.lastError().text());
+            }
+            else
+            {
+                log->info("Loginwindow Connected to database.");
+                QSqlQuery sql_query(database);
+                if(database.tables().contains("users"))
+                {
+                        basedata->set_User_Db_State(true);
+                        QString select_sql = "update users set passwordkey='"+msg["passwordkey"].toString()+"' where account="+basedata->get_user_info()->get_account()+";";
+                        if(!sql_query.exec(select_sql))
+                        {
+                            log->error(sql_query.lastError().text());
+                        }
+                        else
+                        {
+                            cout<<"更新成功！";
+                        }
+                }
+            }
+        }
+    }else if(type == 4)
+    {
+        cout<<"登录成功";
+        connect_timer->stop();
+        QDir dir;
+        if(dir.mkpath("./Datas/All_user"))
+        {
+            if (QSqlDatabase::contains("all_user_connection"))
+            {
+                database = QSqlDatabase::database("all_user_connection");
+            }
+            else
+            {
+                database = QSqlDatabase::addDatabase("QSQLITE","all_user_connection");
+                database.setDatabaseName("./Datas/All_user/Login_User_DataBase.db");
+                database.setUserName("root");
+                database.setPassword("AdU-Y4pVWC4ZeTb");
+            }
+
+            if (!database.open())
+            {
+                log->error("Failed to connect database.\n\t\t"+database.lastError().text());
+            }
+            else
+            {
+                log->info("Loginwindow Connected to database.");
+                QSqlQuery sql_query(database);
+                if(database.tables().contains("users"))
+                {
+                    basedata->set_User_Db_State(true);
+                    QString sql;
+                    if(remember_pass)
+                    {
+                        if(logintype == 2)
+                        {
+                            cout<<"2";
+                            sql = "update users set passwordkey='"+msg["passwordkey"].toString()+"',name ='"+msg["name"].toString()+"',state=1 where account="+basedata->get_user_info()->get_account()+";";
+                        }else
+                        {
+                            sql = "INSERT INTO users (account, name, passwordkey,state) VALUES ('"
+                                    +msg["account"].toString()+"','"
+                                    +msg["name"].toString()+"','"
+                                    +msg["passwordkey"].toString()+"',1);";
+                        }
+                    }
+
+                    if(!sql_query.exec(sql))
+                    {
+                        log->error(sql_query.lastError().text());
+                    }
+                    else
+                    {
+                        cout<<"更新成功！";
+                    }
+                }
+            }
         }
     }
 }

@@ -3,7 +3,10 @@
 
 Person::Person(QWidget *parent) : QWidget(parent)
 {
-
+    this->account ="";
+    this->passwordkey="";
+    this->name="";
+    this->state = 0;
 }
 
 

@@ -6,6 +6,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QHostInfo>
 #include "globaldata.h"
 #include "widgetmanage.h"
 #include "logfiles.h"

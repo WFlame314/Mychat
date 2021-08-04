@@ -16,6 +16,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QVector>
+#include <QCryptographicHash>
 #include "server.h"
 #include "sql.h"
 
@@ -30,6 +31,7 @@ public:
     void send(QByteArray,int);
     void sendface(QString,int);
     void timerEvent(QTimerEvent *event);
+    QString getrandkey();
 
 private:
     QListWidget *ContentListWidget;

@@ -14,7 +14,7 @@ public:
 
     bool open_Loginwindow();
 
-    void sendinfo_to_loginwindow(int type,QString msg="");
+    void sendinfo_to_loginwindow(int type,QJsonObject msg);
 
 private:
     LoginWidget *loginwindow;

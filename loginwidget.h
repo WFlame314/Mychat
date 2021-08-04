@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QGraphicsDropShadowEffect>
 #include <QTimer>
+#include <QJsonObject>
 #include "globaldata.h"
 #include "logfiles.h"
 #include "personlist.h"
@@ -43,7 +44,7 @@ public:
     void init_Userinfo();
     void start_loading();
     void stop_loading();
-    void getinfo(int type,QString msg);
+    void getinfo(int type,QJsonObject msg);
 
 protected:
     void mousePressEvent(QMouseEvent *event);

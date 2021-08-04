@@ -4,6 +4,7 @@
 
 #include <QWidget>
 #include <QIcon>
+#include <QProcess>
 #include "person.h"
 
 class GlobalData
@@ -15,6 +16,7 @@ private:
     bool connect_state;//联网状态
     bool login_state;//登录状态
     int online_state;//在线状态--->0:离线、1:在线、2:忙碌、3:隐身
+    int login_type;//登录模式--->0:手动模式
     bool log_state;
     bool user_db_state;
     bool remember_pass_state;
@@ -42,6 +44,8 @@ public:
     bool get_Remember_Pass_State();
     QIcon get_LOGO();
     Person * get_user_info();
+    int get_Login_Type();
+    QString get_uuid();
 
     void set_Connect_State(bool state);
     void set_Login_State(bool state);
@@ -50,6 +54,7 @@ public:
     void set_User_Db_State(bool state);
     void set_Remember_Pass_State(bool state);
     void set_user_info(Person *user);
+    void set_Login_Type(int type);
 
 };
 
