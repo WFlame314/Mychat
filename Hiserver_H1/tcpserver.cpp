@@ -10,20 +10,40 @@ void TcpServer::dataReceived()
 {
     while(bytesAvailable()>0)
     {
+        QByteArray buf = readAll();
+        QString stringbuf = buf;
+        for(int i = 0; i < stringbuf.size(); i++)
+        {
+            if(stringbuf[i]==char(2))
+            {
+                msg = "";
+                continue;
+            }else if(stringbuf[i]==char(3))
+            {
+                emit updataClients(msg.toUtf8(),msg.toUtf8().size(),this->socketDescriptor());
+                msg = "";
+                continue;
+            }
+            msg += stringbuf[i];
+        }
+    }
+
+    /*while(bytesAvailable()>0)
+    {
         char buf[1];
         read(buf,1);
-        if(buf[0]==char(0))
+        if(buf[0]==char(2))
         {
             msg = "";
             continue;
-        }else if(buf[0]==char(1))
+        }else if(buf[0]==char(3))
         {
             emit updataClients(msg,msg.size(),this->socketDescriptor());
             msg = "";
             continue;
         }
         msg += buf[0];
-    }
+    }*/
     /*while(bytesAvailable()>0)
     {
         int length = bytesAvailable();

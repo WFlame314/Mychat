@@ -2,31 +2,52 @@
 
 TcpServer::TcpServer(QObject *parent)
 {
+    filemodel = false;
     connect(this,SIGNAL(readyRead()),this,SLOT(dataReceived()));
     connect(this,SIGNAL(disconnected()),this,SLOT(slotDisconnected()));
+
 }
 
 void TcpServer::dataReceived()
 {
-    while(bytesAvailable()>0)
+    if(filemodel == false)
     {
-        char buf[1];
-        read(buf,1);
-        if(buf[0]==char(0))
+        while(bytesAvailable()>0)
         {
-            msg = "";
-            continue;
-        }else if(buf[0]==char(1))
-        {
-            emit datareceived(msg,msg.size());
-            msg = "";
-            continue;
+            QByteArray buf = readAll();
+            QString stringbuf = buf;
+            for(int i = 0; i < stringbuf.size(); i++)
+            {
+                if(stringbuf[i]==char(2))
+                {
+                    msg = "";
+                    continue;
+                }else if(stringbuf[i]==char(3))
+                {
+                    emit datareceived(msg.toUtf8(),msg.toUtf8().size());
+                    msg = "";
+                    continue;
+                }
+                msg += stringbuf[i];
+            }
         }
-        msg += buf[0];
+    }else
+    {
+        while(bytesAvailable()>0)
+        {
+             QByteArray buf = readAll();
+             emit filereceived(buf);
+        }
     }
+
 }
 
 void TcpServer::slotDisconnected()
 {
     emit disconnected(this->socketDescriptor());
+}
+
+void TcpServer::setfilemode(bool model)
+{
+    filemodel = model;
 }

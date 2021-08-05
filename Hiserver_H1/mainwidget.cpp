@@ -104,7 +104,7 @@ void MainWidget::updataServer(QString msg,int ,int descriptor)
                     backbody.insert("data",backdata);
                     QJsonDocument msg;
                     msg.setObject(backbody);
-                    send(char(0)+msg.toJson(QJsonDocument::Compact)+char(1),descriptor);
+                    send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3),descriptor);
                     ContentListWidget->addItem(data["account"].toString()+":用户错误");
                 }
                 else if(query.value(0).toString() == QString(Encryptedpasswords))
@@ -141,7 +141,9 @@ void MainWidget::updataServer(QString msg,int ,int descriptor)
                     backbody.insert("data",backdata);
                     QJsonDocument msg;
                     msg.setObject(backbody);
-                    send(char(0)+msg.toJson(QJsonDocument::Compact)+char(1),descriptor);
+                    QString backmsg(msg.toJson(QJsonDocument::Compact));
+                    ContentListWidget->addItem(backmsg);
+                    send(char(2)+backmsg.toUtf8()+char(3),descriptor);
                     ContentListWidget->addItem(data["account"].toString()+":登录成功");
                 }
                 else
@@ -152,7 +154,7 @@ void MainWidget::updataServer(QString msg,int ,int descriptor)
                     backbody.insert("data",backdata);
                     QJsonDocument msg;
                     msg.setObject(backbody);
-                    send(char(0)+msg.toJson(QJsonDocument::Compact)+char(1),descriptor);
+                    send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3),descriptor);
                     ContentListWidget->addItem(data["account"].toString()+":密码错误");
                 }
 
@@ -173,19 +175,26 @@ void MainWidget::updataServer(QString msg,int ,int descriptor)
                     QString key = getrandkey();
                     QByteArray strings=data["uuid"].toString().toUtf8()+'H'+key.toUtf8();
                     QByteArray newEncryptedpasswords = QCryptographicHash::hash(strings, QCryptographicHash::Md5).toHex();
-                    s= "update " + data["account"].toString() + "_devices set password_key='" + QString(newEncryptedpasswords) +"' where uuid= '"+ data["uuid"].toString() +"';";
+                    s = "update " + data["account"].toString() + "_devices set password_key='" + QString(newEncryptedpasswords) +"' where uuid= '"+ data["uuid"].toString() +"';";
                     ContentListWidget->addItem(s);
                     if(query.exec(s))
                     {
                         QJsonObject backbody,backdata;
+                        s = "select nikcname from users where account=" + data["account"].toString() + ";";
+                        if(query.exec(s))
+                        {
+                            query.next();
+                            backdata.insert("name",query.value(0).toString());
+                        }
                         backdata.insert("state","key_login_success");
                         backdata.insert("passwordkey",key);
                         backbody.insert("type","login_return");
                         backbody.insert("data",backdata);
                         QJsonDocument msg;
                         msg.setObject(backbody);
-                        send(char(0)+msg.toJson(QJsonDocument::Compact)+char(1),descriptor);
+                        send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3),descriptor);
                         ContentListWidget->addItem(data["account"].toString()+":登录成功");
+                        sendlogin_files(data["account"].toString(),descriptor);
                     }
                 }else
                 {
@@ -195,14 +204,13 @@ void MainWidget::updataServer(QString msg,int ,int descriptor)
                     backbody.insert("data",backdata);
                     QJsonDocument msg;
                     msg.setObject(backbody);
-                    send(char(0)+msg.toJson(QJsonDocument::Compact)+char(1),descriptor);
+                    send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3),descriptor);
                     ContentListWidget->addItem(data["account"].toString()+":密钥超时");
                 }
             }
         }
 
     }
-
 
     ContentListWidget->scrollToBottom();
 }
@@ -215,7 +223,8 @@ void MainWidget::send(QByteArray backmsg,int descriptor)
         if(item->socketDescriptor()==descriptor)
         {
             item->write(backmsg);
-            ContentListWidget->addItem(QString(backmsg)+QString("-----%1").arg(descriptor));
+            item->waitForBytesWritten();
+            ContentListWidget->addItem(QString(backmsg).remove(0,1).remove(backmsg.length()-1,1)+QString("-----%1").arg(descriptor));
             return;
         }
     }
@@ -239,3 +248,71 @@ QString MainWidget::getrandkey()
     }
     return key;
 }
+
+
+void MainWidget::sendlogin_files(QString account,int descriptor)
+{
+    creatbatfiles(account);
+    QProcess p;
+    p.start(".//bats//"+account+".bat");
+    p.waitForFinished();
+    ContentListWidget->addItem("ran");
+    QFile tcpoutfile("C:/tcptemp/"+account+".tcpout");
+    if(tcpoutfile.open(QIODevice::ReadOnly))
+    {
+        qint64 filesize=0;
+        qint64 sendsize=0;
+        QString filename="";
+
+        filename = tcpoutfile.fileName();
+        filesize = tcpoutfile.size();
+
+        QJsonObject backbody,backdata;
+        backdata.insert("account",account);
+        backdata.insert("filename",filename);
+        backdata.insert("filesize",filesize);
+        backbody.insert("type","login_files");
+        backbody.insert("data",backdata);
+        QJsonDocument msg;
+        msg.setObject(backbody);
+        send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3),descriptor);
+
+        qint64 len = 0;
+        do{
+            // 每次发送 2kb 大小的数据，如果剩余的数据不足 2kb，就发送剩余数据的大小
+            char buf[2*1024] = {0};
+
+            len = 0;
+            len = tcpoutfile.read( buf, sizeof(buf) ); //读数据
+            send(buf,descriptor);    //发数据
+
+            sendsize +=len; //已发送的文件数据大小
+        }while(len > 0);
+
+        if(sendsize == filesize)
+        {
+            ContentListWidget->addItem("文件发送完成");
+            //关闭文件
+            file.close();
+        }
+    }
+}
+
+void MainWidget::creatbatfiles(QString account)
+{
+    QDir dir;
+    if(dir.mkpath("./bats"))
+    {
+        QFile batfile("./bats/"+account+".bat");
+        if(batfile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            QTextStream out(&batfile);
+            out<<"cd /d C:\\Hi_files\\users\\" + account +"\\images\\"<<"\n";
+            out<<"tar cvf C:\\tcptemp\\" + account + ".tcpout faces";
+            batfile.close();
+        }
+    }
+
+}
+
+

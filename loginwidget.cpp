@@ -848,13 +848,21 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
                 if(database.tables().contains("users"))
                 {
                         basedata->set_User_Db_State(true);
-                        QString select_sql = "update users set passwordkey='"+msg["passwordkey"].toString()+"' where account="+basedata->get_user_info()->get_account()+";";
-                        if(!sql_query.exec(select_sql))
+                        QString sql;
+                        if(remember_pass)
+                        {
+                            sql = "update users set passwordkey='"+msg["passwordkey"].toString()+"',name='"+msg["name"].toString()+"' where account="+basedata->get_user_info()->get_account()+";";
+                        }else
+                        {
+                            sql = "update users set passwordkey='',name='"+msg["name"].toString()+"' where account="+basedata->get_user_info()->get_account()+";";
+                        }
+                        if(!sql_query.exec(sql))
                         {
                             log->error(sql_query.lastError().text());
                         }
                         else
                         {
+                            log->info(basedata->get_user_info()->get_account()+" set rememberpass state ->"+remember_pass);
                             cout<<"更新成功！";
                         }
                 }
@@ -904,6 +912,18 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
                                     +msg["name"].toString()+"','"
                                     +msg["passwordkey"].toString()+"',1);";
                         }
+                    }else
+                    {
+                        if(logintype == 2)
+                        {
+                            cout<<"2";
+                            sql = "update users set passwordkey='',name ='"+msg["name"].toString()+"',state=1 where account="+basedata->get_user_info()->get_account()+";";
+                        }else
+                        {
+                            sql = "INSERT INTO users (account, name, passwordkey,state) VALUES ('"
+                                    +msg["account"].toString()+"','"
+                                    +msg["name"].toString()+"','',1);";
+                        }
                     }
 
                     if(!sql_query.exec(sql))
@@ -912,7 +932,7 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
                     }
                     else
                     {
-                        cout<<"更新成功！";
+                        log->info(msg["account"].toString()+" set rememberpass state ->"+remember_pass);
                     }
                 }
             }

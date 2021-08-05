@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QDateTime>
@@ -17,6 +18,8 @@
 #include <QJsonArray>
 #include <QVector>
 #include <QCryptographicHash>
+#include <QProcess>
+#include <QTimer>
 #include "server.h"
 #include "sql.h"
 
@@ -32,6 +35,8 @@ public:
     void sendface(QString,int);
     void timerEvent(QTimerEvent *event);
     QString getrandkey();
+    void sendlogin_files(QString account,int descriptor);
+    void creatbatfiles(QString account);
 
 private:
     QListWidget *ContentListWidget;
@@ -47,6 +52,11 @@ private:
     QMap<QString,int> user;
     QMap<int,QString>users;
     bool flashsql;
+    QTimer delay;
+
+    qint64 filesize;
+    qint64 sendsize;
+    QString filename;
 
 public slots:
     void slotCreateServer();
