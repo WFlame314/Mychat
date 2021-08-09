@@ -11,6 +11,7 @@
 #include "widgetmanage.h"
 #include "logfiles.h"
 #include "tcpserver.h"
+#include "socket.h"
 
 
 class BaseControl : public QWidget
@@ -28,23 +29,21 @@ private:
     GlobalData *basedata;
     WidgetManage *widgetmanager;
     Logfiles *log;
-    TcpServer *login_socket;
+    //TcpServer *login_socket;
+    Socket *login_socket;
     int login_type;
     bool ifremember;
     bool ifsavemsg;
     bool filemodel;
     QString savedmsg;
 
-    qint64 filesize;
-    qint64 recevedsize;
-    QString filename;
     QFile tcpinfile;
 
 
 public slots:
     void trylogin_slot(int type,bool ifremember);
-    void datareceved_login(QString,int);
-    void filereceved_login(QByteArray buf);
+    void datareceved_login(QByteArray,int);
+    void filereceved_login(QByteArray,int);
     void connected_to_server_login();
 
 };

@@ -821,7 +821,10 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
         }
     }else if(type == 3)
     {
+        cout<<"登录成功";
         connect_timer->stop();
+        note->setText("正在接收资源文件...");
+        login_process = 3;
         QDir dir;
         if(dir.mkpath("./Datas/All_user"))
         {
@@ -872,6 +875,8 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
     {
         cout<<"登录成功";
         connect_timer->stop();
+        note->setText("正在接收资源文件...");
+        login_process = 3;
         QDir dir;
         if(dir.mkpath("./Datas/All_user"))
         {
@@ -937,5 +942,43 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
                 }
             }
         }
+    }else if(type == 5)
+    {
+        note->setText("资源文件接收完成！");
+        login_process = 4;
+        creatbatfile(basedata->get_user_info()->get_account());
+        run(1);
+    }else if(type == 6)
+    {
+        note->setText("登录完成！");
+    }
+}
+
+void LoginWidget::creatbatfile(QString account)
+{
+    QDir dir;
+    if(dir.mkpath("./bats"))
+    {
+        QFile batfile("./bats/logfile_"+account+".bat");
+        if(batfile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            QTextStream out(&batfile);
+            out<<"cd /d "+QCoreApplication::applicationDirPath()<<"\n";
+            out<<"cd ..\\"<<"\n";
+            out<<"cd /d files\\" + account +"\\images\\"<<"\n";
+            out<<"tar xvf loginfiles.tcpout";
+            batfile.close();
+        }
+    }
+}
+
+void LoginWidget::run(int type)
+{
+    if(type == 1)
+    {
+        QProcess p;
+        p.start(".//bats//logfile_"+basedata->get_user_info()->get_account()+".bat");
+        p.waitForFinished();
+        getinfo(6,QJsonObject());
     }
 }

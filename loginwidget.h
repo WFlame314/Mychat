@@ -45,6 +45,8 @@ public:
     void start_loading();
     void stop_loading();
     void getinfo(int type,QJsonObject msg);
+    void creatbatfile(QString account);
+    void run(int type);
 
 protected:
     void mousePressEvent(QMouseEvent *event);

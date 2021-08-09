@@ -1,0 +1,136 @@
+#include "socket.h"
+
+Socket::Socket(QObject *)
+{
+    m_payloadSize = 64 * 1024;
+    m_totalBytes = 0;
+    m_bytesWritten = 0;
+    m_bytesToWrite = 0;
+    msg_buf = "";
+    filemode_send=false;
+    filemode_recevie = false;
+    connect(this,&QTcpSocket::readyRead,this,&Socket::dataReceived);
+    connect(this,&QTcpSocket::disconnected,this,&Socket::slotDisconnected);
+    connect(this,&QTcpSocket::bytesWritten,this,&Socket::getBytesW);
+}
+
+void Socket::dataReceived()
+{
+    while(bytesAvailable()>0)
+    {
+        qDebug()<<bytesAvailable();
+        QByteArray buf = readAll();
+        for(int i = 0; i < buf.size(); i++)
+        {
+            if(filemode_recevie == false)
+            {
+                if(buf[i]==char(2))
+                {
+                    msg_data = "";
+                    continue;
+                }else if(buf[i]==char(3))
+                {
+                    emit H_dataReceived(msg_data,this->socketDescriptor());
+                    msg_data = "";
+                    continue;
+                }else if(buf[i]==char(1))
+                {
+
+                    receviedsize = 0;
+                    filemode_recevie = true;
+                    continue;
+                }
+                msg_data += buf[i];
+            }else
+            {
+                receviedsize ++;
+                file_data += buf[i];
+                if(receviedsize == filesize)
+                {
+                    emit H_fileReceived(file_data,this->socketDescriptor());
+                    filesize=0;
+                    receviedsize = 0;
+                    filemode_recevie = false;
+                }
+
+                /*if(buf[i]==char(2))
+                {
+                    file_data = "";
+                    continue;
+                }else if(buf[i]==char(3))
+                {
+                    //filemode_recevie = false;
+                    emit H_fileReceived(file_data,this->socketDescriptor());
+                    file_data = "";
+                    continue;
+                }
+                file_data += buf[i];*/
+            }
+        }
+        if(filemode_recevie)
+        {
+            qDebug()<<"-->"<<receviedsize<<" "<<filesize;
+        }
+    }
+}
+
+
+void Socket::slotDisconnected()
+{
+    emit clientDisconnected(this->socketDescriptor());
+}
+
+void Socket::getBytesW(qint64 num)
+{
+    if(filemode_send == false)
+    {
+        msg_buf = "";
+    }else
+    {
+        m_bytesWritten += (int)num;
+        qDebug()<<m_bytesWritten<<" "<<num<<" "<<m_totalBytes;
+        if(m_bytesToWrite>0){
+            m_outBlock=filebuf.read(qMin(m_bytesToWrite,m_payloadSize));
+            m_bytesToWrite-=(int)this->write(m_outBlock);
+            m_outBlock.resize(0);
+        }
+        else{
+            filebuf.close();
+        }
+        if(m_bytesWritten==m_totalBytes){
+            filebuf.close();
+            filemode_send = false;
+            qDebug()<<"ok";
+        }
+    }
+
+}
+
+qint64 Socket::send(QByteArray data)
+{
+    msg_buf += data;
+    if(filemode_send == false)
+    {
+        qint64 len;
+        len = this->write(msg_buf);
+        return len;
+    }
+    return 0;
+}
+
+void Socket::sendfile(QString filename)
+{
+    filebuf.setFileName(filename);
+    if(filebuf.open(QIODevice::ReadOnly))
+    {
+        filemode_send=true;
+        m_totalBytes=filebuf.size();
+        m_totalBytes += m_outBlock.size();
+        m_bytesToWrite=m_totalBytes - this->write(QString("%1%2").arg(char(1)).arg(filebuf.size()).toUtf8());
+    }
+}
+
+void Socket::setfile_size(int size)
+{
+    filesize = size;
+}
