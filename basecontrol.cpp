@@ -15,6 +15,7 @@ BaseControl::BaseControl(QWidget *parent)
     connect(login_socket,&Socket::H_dataReceived,this,&BaseControl::datareceved_login);
     connect(login_socket,&Socket::H_fileReceived,this,&BaseControl::filereceved_login);
     connect(widgetmanager,SIGNAL(trylogin_signal(int,bool)),this,SLOT(trylogin_slot(int,bool)));
+    connect(widgetmanager,&WidgetManage::login_finished,this,&BaseControl::login_finished);
     if(widgetmanager->open_Loginwindow())
     {
         if(basedata->get_Log_State())
@@ -65,9 +66,8 @@ void BaseControl::connected_to_server_login()
     body.insert("data",data);
     QJsonDocument msg;
     msg.setObject(body);
-    log->info(QString("try login /n/t---->"+msg.toJson(QJsonDocument::Compact)).toUtf8());
+    log->info("try login");
     login_socket->send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3));
-    //login_socket->write(char(2)+msg.toJson(QJsonDocument::Compact)+char(3));
 }
 
 void BaseControl::datareceved_login(QByteArray msg,int length)
@@ -77,7 +77,6 @@ void BaseControl::datareceved_login(QByteArray msg,int length)
     if(!(parseJsonErr.error == QJsonParseError::NoError))
     {
         log->error("解析json文件错误！"+parseJsonErr.errorString());
-        cout<<tr("解析json文件错误！");
         return;
     }
     QJsonObject body = document.object();
@@ -121,12 +120,34 @@ void BaseControl::datareceved_login(QByteArray msg,int length)
 
 void BaseControl::filereceved_login(QByteArray buf,int)
 {
-    tcpinfile.setFileName("./files/"+basedata->get_user_info()->get_account()+"/images/loginfiles.tcpout");
-    if(tcpinfile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    QDir dir;
+    if(dir.mkpath("./files/"+basedata->get_user_info()->get_account()+"/images"))
     {
-        tcpinfile.write(buf);
+        tcpinfile.setFileName("./files/"+basedata->get_user_info()->get_account()+"/images/loginfiles.tcpout");
+        if(tcpinfile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            tcpinfile.write(buf);
+        }
+        tcpinfile.close();
+        cout<<"文件接收完成！";
+        widgetmanager->sendinfo_to_loginwindow(5,QJsonObject());
     }
-    tcpinfile.close();
-    cout<<"文件接收完成！";
-    widgetmanager->sendinfo_to_loginwindow(5,QJsonObject());
+}
+
+void BaseControl::login_finished()
+{
+    if(widgetmanager->open_Mainwindow())
+    {
+        if(basedata->get_Log_State())
+        {
+            log->info("MAINWINDOW OPENED!");
+        }
+        else
+        {
+            QMessageBox::warning(this,"日志文件错误","日志文件打开失败！");
+        }
+    }else
+    {
+        log->error("MAINWINDOW OPEN FAILED!");
+    }
 }

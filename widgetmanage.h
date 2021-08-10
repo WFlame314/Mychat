@@ -5,6 +5,7 @@
 #include "logfiles.h"
 #include "loginwidget.h"
 #include "globaldata.h"
+#include "mainwidget.h"
 
 class WidgetManage : public QWidget
 {
@@ -14,18 +15,23 @@ public:
 
     bool open_Loginwindow();
 
+    bool open_Mainwindow();
+
     void sendinfo_to_loginwindow(int type,QJsonObject msg);
 
 private:
     LoginWidget *loginwindow;
+    MainWidget *mainwindow;
     GlobalData *basedata;
     Logfiles *log;
 
 signals:
     void trylogin_signal(int type,bool ifremember);
+    void login_finished();
 
 public slots:
     void trylogin_slot(int type,bool ifremember);
+    void login_finished_slot();
 
 };
 

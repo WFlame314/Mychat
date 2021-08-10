@@ -10,7 +10,6 @@
 #include "globaldata.h"
 #include "widgetmanage.h"
 #include "logfiles.h"
-#include "tcpserver.h"
 #include "socket.h"
 
 
@@ -29,7 +28,6 @@ private:
     GlobalData *basedata;
     WidgetManage *widgetmanager;
     Logfiles *log;
-    //TcpServer *login_socket;
     Socket *login_socket;
     int login_type;
     bool ifremember;
@@ -45,6 +43,7 @@ public slots:
     void datareceved_login(QByteArray,int);
     void filereceved_login(QByteArray,int);
     void connected_to_server_login();
+    void login_finished();
 
 };
 #endif // BASECONTROL_H

@@ -23,11 +23,11 @@ SOURCES += \
     loginwidget.cpp \
     main.cpp \
     basecontrol.cpp \
+    mainwidget.cpp \
     mytools.cpp \
     person.cpp \
     personlist.cpp \
     socket.cpp \
-    tcpserver.cpp \
     widgetmanage.cpp \
     Loading.cpp
 
@@ -36,12 +36,12 @@ HEADERS += \
     globaldata.h \
     logfiles.h \
     loginwidget.h \
+    mainwidget.h \
     mytools.h \
     person.h \
     personlist.h \
     qrencode.h \
     socket.h \
-    tcpserver.h \
     widgetmanage.h \
     Loading.h
 
@@ -51,7 +51,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
-    loginwidget.ui
+    loginwidget.ui \
+    mainwidget.ui
 
 RESOURCES += \
     QSS.qrc

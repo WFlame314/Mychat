@@ -34,28 +34,22 @@ void Socket::dataReceived()
                     continue;
                 }else if(buf[i]==char(1))
                 {
-                    QDir dir;
-                    if(dir.mkpath("./data"))
-                    {
-                        filemode_recevie = true;
-                    }
+                    receviedsize = 0;
+                    filemode_recevie = true;
                     continue;
                 }
                 msg_data += buf[i];
             }else
             {
-                if(buf[i]==char(2))
-                {
-                    file_data = "";
-                    continue;
-                }else if(buf[i]==char(3))
-                {
-                    filemode_recevie = false;
-                    emit H_fileReceived(file_data,this->socketDescriptor());
-                    file_data = "";
-                    continue;
-                }
+                receviedsize ++;
                 file_data += buf[i];
+                if(receviedsize == filesize)
+                {
+                    emit H_fileReceived(file_data,this->socketDescriptor());
+                    filesize=0;
+                    receviedsize = 0;
+                    filemode_recevie = false;
+                }
             }
         }
     }
@@ -116,4 +110,9 @@ void Socket::sendfile(QString filename)
         m_bytesToWrite = filebuf.size();
         m_totalBytes += this->write(QString(char(1)).toUtf8());
     }
+}
+
+void Socket::setfile_size(int size)
+{
+    filesize = size;
 }

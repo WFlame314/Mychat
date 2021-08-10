@@ -821,9 +821,8 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
         }
     }else if(type == 3)
     {
-        cout<<"登录成功";
         connect_timer->stop();
-        note->setText("正在接收资源文件...");
+        note->setText("请稍等...");
         login_process = 3;
         QDir dir;
         if(dir.mkpath("./Datas/All_user"))
@@ -875,7 +874,7 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
     {
         cout<<"登录成功";
         connect_timer->stop();
-        note->setText("正在接收资源文件...");
+        note->setText("请稍等...");
         login_process = 3;
         QDir dir;
         if(dir.mkpath("./Datas/All_user"))
@@ -944,13 +943,13 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
         }
     }else if(type == 5)
     {
-        note->setText("资源文件接收完成！");
         login_process = 4;
         creatbatfile(basedata->get_user_info()->get_account());
         run(1);
     }else if(type == 6)
     {
         note->setText("登录完成！");
+        emit login_finished();
     }
 }
 
@@ -966,7 +965,8 @@ void LoginWidget::creatbatfile(QString account)
             out<<"cd /d "+QCoreApplication::applicationDirPath()<<"\n";
             out<<"cd ..\\"<<"\n";
             out<<"cd /d files\\" + account +"\\images\\"<<"\n";
-            out<<"tar xvf loginfiles.tcpout";
+            out<<"tar xvf loginfiles.tcpout"<<"\n";
+            out<<"copy faces\\"+account+".* ..\\..\\All_user\\image\\faces";
             batfile.close();
         }
     }

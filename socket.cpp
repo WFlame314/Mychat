@@ -52,19 +52,6 @@ void Socket::dataReceived()
                     receviedsize = 0;
                     filemode_recevie = false;
                 }
-
-                /*if(buf[i]==char(2))
-                {
-                    file_data = "";
-                    continue;
-                }else if(buf[i]==char(3))
-                {
-                    //filemode_recevie = false;
-                    emit H_fileReceived(file_data,this->socketDescriptor());
-                    file_data = "";
-                    continue;
-                }
-                file_data += buf[i];*/
             }
         }
         if(filemode_recevie)
@@ -123,10 +110,11 @@ void Socket::sendfile(QString filename)
     filebuf.setFileName(filename);
     if(filebuf.open(QIODevice::ReadOnly))
     {
+        qDebug()<<"打开成功";
         filemode_send=true;
         m_totalBytes=filebuf.size();
-        m_totalBytes += m_outBlock.size();
-        m_bytesToWrite=m_totalBytes - this->write(QString("%1%2").arg(char(1)).arg(filebuf.size()).toUtf8());
+        m_bytesToWrite = filebuf.size();
+        m_totalBytes += this->write(QString(char(1)).toUtf8());
     }
 }
 

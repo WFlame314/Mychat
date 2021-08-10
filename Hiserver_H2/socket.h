@@ -14,6 +14,7 @@ public:
     Socket(QObject *);
     qint64 send(QByteArray data);
     void sendfile(QString filename);
+    void setfile_size(int size);
 private:
     QByteArray msg_data;
     QByteArray file_data;
@@ -27,6 +28,9 @@ private:
     qint64 m_bytesToWrite;
     qint64 m_payloadSize;
     QByteArray m_outBlock;
+
+    int filesize;
+    int receviedsize;
 
 protected:
     void filetemp(QByteArray data);

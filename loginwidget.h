@@ -106,6 +106,7 @@ public slots:
 
 signals:
     void trylogin(int type,bool ifremember);
+    void login_finished();
 };
 
 #endif // LOGINWIDGET_H
