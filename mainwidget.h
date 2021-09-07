@@ -15,6 +15,7 @@
 #include "personlist.h"
 #include "Loading.h"
 #include "mytools.h"
+#include "mybutton.h"
 
 namespace Ui {
 class MainWidget;
@@ -42,7 +43,18 @@ private:
     GlobalData *basedata; //公共数据
     QPoint p;//记录鼠标在窗口中的位置
     Logfiles *log;
-    QPixmap bg;
+    QPixmap pix;
+    QImage LOGO;
+
+    /*
+     * 窗口中组件
+     */
+    QLabel *LOGO_label;
+    MyButton *minisize_btn;
+    MyButton *close_btn;
+    MyButton *maxsize_btn;
+    MyButton *hide_btn;
+
 };
 
 #endif // MAINWIDGET_H

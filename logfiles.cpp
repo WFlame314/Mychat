@@ -24,7 +24,8 @@ void Logfiles::init()
         if(logfile->open(QIODevice::WriteOnly| QIODevice::Append))
         {
             out = new QTextStream(logfile);
-            info("OPEN LOGFILE SUCCESS!");
+            InsertLog("INFO","OPEN LOGFILE SUCCESS!");
+            logfile->close();
             basedata->set_Log_State(true);
         }else
         {
@@ -56,10 +57,20 @@ void Logfiles::InsertLog(QString type, QString msg)
 
 void Logfiles::info(QString msg)
 {
-    InsertLog("INFO",msg);
+    if(logfile->open(QIODevice::WriteOnly| QIODevice::Append))
+    {
+        out->setDevice(logfile);
+        InsertLog("INFO",msg);
+        logfile->close();
+    }
 }
 
 void Logfiles::error(QString msg)
 {
-    InsertLog("ERROR",msg);
+    if(logfile->open(QIODevice::WriteOnly| QIODevice::Append))
+    {
+        out->setDevice(logfile);
+        InsertLog("ERROR",msg);
+        logfile->close();
+    }
 }

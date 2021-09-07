@@ -21,6 +21,18 @@
         <file>res/image/btn/delete_pressed.png</file>
         <file>res/image/btn/edit.png</file>
         <file>res/image/btn/edit_hover.png</file>
+        <file>res/image/btn/close.png</file>
+        <file>res/image/btn/close_hover.png</file>
+        <file>res/image/btn/close_pressed.png</file>
+        <file>res/image/btn/maxsize.png</file>
+        <file>res/image/btn/maxsize_hover.png</file>
+        <file>res/image/btn/maxsize_pressed.png</file>
+        <file>res/image/btn/minisize.png</file>
+        <file>res/image/btn/minisize_hover.png</file>
+        <file>res/image/btn/minisize_pressed.png</file>
+        <file>res/image/btn/rmaxsize.png</file>
+        <file>res/image/btn/rmaxsize_hover.png</file>
+        <file>res/image/btn/rmaxsize_pressed.png</file>
     </qresource>
     <qresource prefix="/image/faces">
         <file>res/image/faces/boy_1.png</file>

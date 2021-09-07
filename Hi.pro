@@ -24,6 +24,7 @@ SOURCES += \
     main.cpp \
     basecontrol.cpp \
     mainwidget.cpp \
+    mybutton.cpp \
     mytools.cpp \
     person.cpp \
     personlist.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     logfiles.h \
     loginwidget.h \
     mainwidget.h \
+    mybutton.h \
     mytools.h \
     person.h \
     personlist.h \

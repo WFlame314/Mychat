@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QLabel>
 #include <QPushButton>
+#include "mybutton.h"
 
 class Person : public QWidget
 {
@@ -30,7 +31,7 @@ private:
     QLabel *face_image;
     QLabel *name_label;
     QLabel *account_label;
-    QPushButton *delete_btn;
+    MyButton *delete_btn;
 
     QString passwordkey;
     QString account;

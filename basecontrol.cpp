@@ -18,6 +18,7 @@ BaseControl::BaseControl(QWidget *parent)
     connect(widgetmanager,&WidgetManage::login_finished,this,&BaseControl::login_finished);
     if(widgetmanager->open_Loginwindow())
     {
+        widgetmanager->open_Mainwindow();
         if(basedata->get_Log_State())
         {
             log->info("LOGWINDOW OPENED!");

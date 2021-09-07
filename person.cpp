@@ -19,7 +19,7 @@ Person::Person(QString account,QString name,QString passwordkey,int state,QWidge
     face_image = new QLabel(this);
     name_label = new QLabel(this);
     account_label = new QLabel(this);
-    delete_btn = new QPushButton(this);
+    delete_btn = new MyButton(this);
     connect(delete_btn,SIGNAL(clicked()),this,SLOT(delete_btn_clicked()));
     init_userlist_buddy();
 }
@@ -32,7 +32,7 @@ Person::Person(QString account,QString passwordkey,int state,QWidget *parent) : 
     face_image = new QLabel(this);
     name_label = new QLabel(this);
     account_label = new QLabel(this);
-    delete_btn = new QPushButton(this);
+    delete_btn = new MyButton(this);
     init_userlist_buddy();
 }
 
@@ -68,16 +68,22 @@ void Person::init_userlist_buddy()
                                  "background: rgba(0,0,0,0);"
                                  "color: rgb(50,50,50);"
                                  "}");
+    delete_btn->setNormalIcon(QIcon(":/image/btn/res/image/btn/delete.png"));
+    delete_btn->setHoverIcon(QIcon(":/image/btn/res/image/btn/delete_hover.png"));
+    delete_btn->setPressedIcon(QIcon(":/image/btn/res/image/btn/delete_pressed.png"));
     delete_btn->setStyleSheet("QPushButton{"
-                              "border-image: url(:/image/btn/res/image/btn/delete.png);"
                               "border-radius: 10px transparent;"
-                              "}"
-                              "QPushButton:hover{"
-                              "border-image: url(:/image/btn/res/image/btn/delete_hover.png);"
-                              "}"
-                              "QPushButton:pressed{"
-                              "border-image: url(:/image/btn/res/image/btn/delete_pressed.png);"
                               "}");
+//    delete_btn->setStyleSheet("QPushButton{"
+//                              "border-image: url(:/image/btn/res/image/btn/delete.png);"
+//                              "border-radius: 10px transparent;"
+//                              "}"
+//                              "QPushButton:hover{"
+//                              "border-image: url(:/image/btn/res/image/btn/delete_hover.png);"
+//                              "}"
+//                              "QPushButton:pressed{"
+//                              "border-image: url(:/image/btn/res/image/btn/delete_pressed.png);"
+//                              "}");
 }
 
 

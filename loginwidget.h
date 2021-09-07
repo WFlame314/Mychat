@@ -25,6 +25,7 @@
 #include "personlist.h"
 #include "Loading.h"
 #include "mytools.h"
+#include "mybutton.h"
 
 namespace Ui {
 class LoginWidget;
@@ -59,6 +60,7 @@ private:
     GlobalData *basedata; //公共数据
     QPoint p;//记录鼠标在窗口中的位置
     Logfiles *log;
+    QImage LOGO;
     QSqlDatabase database;
     QPixmap pix;
     QAction *userAction;
@@ -75,7 +77,8 @@ private:
     /*
      * 窗口中组件
      */
-    QPushButton *close_btn;
+    MyButton *close_btn;
+    //QPushButton *close_btn;
     QPushButton *QR_btn;
     QLabel *face_image;
     PersonList *userlist;
@@ -87,6 +90,7 @@ private:
     QPushButton *remember_btn;
     Loading *loading_flash;
     QLabel *note;
+    QLabel *LOGO_label;
     //QRcode *qrcode;
 
 

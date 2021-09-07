@@ -11,11 +11,13 @@ LoginWidget::LoginWidget(GlobalData *basedata,Logfiles *log,QWidget *parent) :
     //设置窗口透明
     setAttribute(Qt::WA_TranslucentBackground);
     setWindowIcon(basedata->get_LOGO());
+    setWindowTitle("登录_Hi");
     this->basedata = basedata;
     this->log = log;
     loading_flash = NULL;
     model = 1;
     logintype = 0;
+
 
     show_user = false;
     remember_pass = false;
@@ -25,8 +27,13 @@ LoginWidget::LoginWidget(GlobalData *basedata,Logfiles *log,QWidget *parent) :
     connect_timer = new QTimer(this);
     connect(connect_timer,&QTimer::timeout,this,&LoginWidget::connect_timer_Timeout);
 
+    //LOGO
+    LOGO.load(":/image/icon/res/image/icon/hi.png");
+    LOGO_label = new QLabel(this);
+
     //关闭按钮
-    close_btn = new QPushButton(this);
+    close_btn = new MyButton(this);
+    //close_btn = new QPushButton(this);
     connect(close_btn,SIGNAL(clicked()),this,SLOT(close_window()));
 
     //二维码按钮
@@ -124,6 +131,7 @@ void LoginWidget::init_Size()
     this->setFixedSize(250,300);
     close_btn->setFixedSize(20,20);
     QR_btn->setFixedSize(25,25);
+    LOGO_label->setFixedSize(25,25);
     face_image->setFixedSize(80,80);
     account_edit->setFixedSize(180,30);
     password_edit->setFixedSize(180,30);
@@ -137,6 +145,7 @@ void LoginWidget::init_Pos()
 {
     close_btn->move(this->width()-30,10);
     QR_btn->move(10,10);
+    LOGO_label->move(this->width()/2-LOGO_label->width()/2,10);
     face_image->move(this->width()/2-face_image->width()/2,60);
     account_edit->move(this->width()/2-account_edit->width()/2,face_image->y()+face_image->height()+25);
     password_edit->move(this->width()/2-password_edit->width()/2,account_edit->y()+account_edit->height()+10);
@@ -149,15 +158,11 @@ void LoginWidget::init_Pos()
 
 void LoginWidget::init_Style()
 {
+    close_btn->setNormalIcon(QIcon(":/image/btn/res/image/btn/login_close.png"));
+    close_btn->setHoverIcon(QIcon(":/image/btn/res/image/btn/login_close_hover.png"));
+    close_btn->setPressedIcon(QIcon(":/image/btn/res/image/btn/login_close_pressed.png"));
     close_btn->setStyleSheet("QPushButton{"
-                             "border-image: url(:/image/btn/res/image/btn/login_close.png);"
                              "border-radius: 10px transparent;"
-                             "}"
-                             "QPushButton:hover{"
-                             "border-image: url(:/image/btn/res/image/btn/login_close_hover.png);"
-                             "}"
-                             "QPushButton:pressed{"
-                             "border-image: url(:/image/btn/res/image/btn/login_close_pressed.png);"
                              "}");
     QR_btn->setStyleSheet("QPushButton{"
                           "border-image: url(:/image/btn/res/image/btn/QR.png);"
@@ -165,6 +170,8 @@ void LoginWidget::init_Style()
                           "QPushButton:hover{"
                           "border-image: url(:/image/btn/res/image/btn/QR_hover.png);"
                           "}");
+    LOGO_label->setPixmap(pix.fromImage(LOGO));
+    LOGO_label->setScaledContents(true);
     faceimage.load(":/image/faces/res/image/faces/boy_1.png");
     face_image->setPixmap(pix.fromImage(faceimage));
     face_image->setScaledContents(true);
@@ -684,7 +691,7 @@ void LoginWidget::user_QRcode()
             QPixmap qrPixmap;
             int width = face_image->width();
             int height = face_image->height();
-            MyTools::GernerateQRCode("http://www.baidu.com?id=dakdjkadbad8a7d9adsndlkadnalkdadaod900adska", qrPixmap, 10);
+            MyTools::GernerateQRCode("此功能正在开发中...", qrPixmap, 10);
             qrPixmap = qrPixmap.scaled(QSize(width, height),
                                        Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
             face_image->setPixmap(qrPixmap);
