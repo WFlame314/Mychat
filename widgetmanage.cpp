@@ -12,6 +12,7 @@ bool WidgetManage::open_Loginwindow()
     {
         connect(loginwindow,SIGNAL(trylogin(int,bool)),this,SLOT(trylogin_slot(int,bool)));
         connect(loginwindow,&LoginWidget::login_finished,this,&WidgetManage::login_finished_slot);
+        connect(loginwindow,&LoginWidget::file_done,this,&WidgetManage::file_done);
         cout<<"yes";
         loginwindow->show();
         return true;
@@ -51,3 +52,9 @@ void WidgetManage::login_finished_slot()
     loginwindow->close();
     emit login_finished();
 }
+
+void WidgetManage::file_done()
+{
+    emit getfriends();
+}
+

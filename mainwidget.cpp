@@ -14,7 +14,7 @@ MainWidget::MainWidget(GlobalData *basedata,Logfiles *log,QWidget *parent) :
     setWindowTitle("Hi");
     this->basedata = basedata;
     this->log = log;
-    setFixedSize(700,500);
+    setFixedSize(800,500);
     init();
 //    if(!bg.load(":/image/windows/res/image/windows/def_background.jpeg"))
 //    {
@@ -36,12 +36,29 @@ void MainWidget::init()
 
     //关闭按钮
     close_btn = new MyButton(this);
+    close_btn->setName("关闭");
 
     //最大化按钮
     maxsize_btn = new MyButton(this);
+    maxsize_btn->setName("最大化");
 
-    //最小话按钮
+    //最小化按钮
     minisize_btn = new MyButton(this);
+    minisize_btn->setName("最小化");
+
+    //折叠按钮
+    hide_show_btn = new MyButton(this);
+    hide_show_btn->setName("分体模式");
+
+    //头像按钮
+    face_btn = new MyButton(this);
+    face_btn->setCursor(Qt::PointingHandCursor);
+
+    //昵称标签
+    name_label = new QLabel(this);
+
+    //签名按钮
+    sign_btn = new QPushButton(this);
 
     init_Size();
     init_Pos();
@@ -62,6 +79,18 @@ void MainWidget::init_Size()
 
     //最小化按钮
     minisize_btn->setFixedSize(25,25);
+
+    //折叠按钮
+    hide_show_btn->setFixedSize(25,25);
+
+    //头像
+    face_btn->setFixedSize(50,50);
+
+    //昵称标签
+    name_label->setFixedSize(100,25);
+
+    //昵称按钮
+    sign_btn->setFixedSize(130,20);
 }
 
 
@@ -78,6 +107,18 @@ void MainWidget::init_Pos()
 
     //最小化按钮
     minisize_btn->move(maxsize_btn->x()-minisize_btn->width()-2,10);
+
+    //折叠按钮
+    hide_show_btn->move(235-hide_show_btn->width()-2,10);
+
+    //头像按钮
+    face_btn->move(20,50);
+
+    //昵称标签
+    name_label->move(face_btn->x()+face_btn->width()+10,face_btn->y()+2);
+
+    //签名按钮
+    sign_btn->move(name_label->x(),name_label->y()+28);
 }
 
 
@@ -110,6 +151,32 @@ void MainWidget::init_Style()
     minisize_btn->setStyleSheet("QPushButton{"
                                 "border-radius: 5px transparent;"
                                 "}");
+
+    //折叠按钮
+    hide_show_btn->setNormalIcon(QIcon(":/image/btn/res/image/btn/hide.png"));
+    hide_show_btn->setHoverIcon(QIcon(":/image/btn/res/image/btn/hide_hover.png"));
+    hide_show_btn->setPressedIcon(QIcon(":/image/btn/res/image/btn/hide_pressed.png"));
+    hide_show_btn->setStyleSheet("QPushButton{"
+                                 "border-radius: 5px transparent;"
+                                 "}");
+    face_btn->setNormalIcon(QIcon("./files/All_user/image/faces/" + basedata->get_user_info()->get_account() + ".jpg"));
+    //face_btn->setNormalIcon(QIcon(QString("./files/All_user/image/faces/10001.jpg")));
+
+    //昵称标签
+    name_label->setText(basedata->get_user_info()->get_name());
+    name_label->setStyleSheet("QLabel{"
+                              "font-size: 20px;"
+                              "font-weight: 600;"
+                              "}");
+
+    //昵称按钮
+    sign_btn->setText(basedata->get_user_info()->get_sign());
+    sign_btn->setStyleSheet("QPushButton{"
+                            "background-color:rgba(1,1,1,0.2);"
+                            "font-size: 17px;"
+                            "font-weight: 400;"
+                            "color: rgb(255,255,255);"
+                            "}");
 
 }
 

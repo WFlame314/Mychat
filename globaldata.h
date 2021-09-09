@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QIcon>
 #include <QProcess>
+#include <QJsonArray>
+#include <QJsonObject>
 #include "person.h"
 
 class GlobalData
@@ -32,6 +34,8 @@ private:
      */
     QIcon *LOGO;
     Person *user;
+    QJsonArray groups;
+    QJsonArray friendsinfo;
 
 public:
     GlobalData();
@@ -46,6 +50,8 @@ public:
     Person * get_user_info();
     int get_Login_Type();
     QString get_uuid();
+    QJsonArray get_groups();
+    QJsonArray get_friendsinfo();
 
     void set_Connect_State(bool state);
     void set_Login_State(bool state);
@@ -55,6 +61,8 @@ public:
     void set_Remember_Pass_State(bool state);
     void set_user_info(Person *user);
     void set_Login_Type(int type);
+    void set_groups(QJsonArray data);
+    void set_friendsinfo(QJsonArray data);
 
 };
 

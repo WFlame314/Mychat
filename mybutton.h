@@ -13,8 +13,11 @@ public:
     void setNormalIcon(QIcon ico);
     void setHoverIcon(QIcon ico);
     void setPressedIcon(QIcon ico);
+    void setName(QString name);
     void removeHoverIcon();
     void removePressIcon();
+
+    QString getName();
 
 protected:
     bool eventFilter(QObject *object, QEvent *event) override;
@@ -25,6 +28,7 @@ private:
     QIcon normalicon;
     QIcon hovericon;
     QIcon pressedicon;
+    QString name;
 };
 
 #endif // MYBUTTON_H

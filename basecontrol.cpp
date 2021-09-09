@@ -16,9 +16,10 @@ BaseControl::BaseControl(QWidget *parent)
     connect(login_socket,&Socket::H_fileReceived,this,&BaseControl::filereceved_login);
     connect(widgetmanager,SIGNAL(trylogin_signal(int,bool)),this,SLOT(trylogin_slot(int,bool)));
     connect(widgetmanager,&WidgetManage::login_finished,this,&BaseControl::login_finished);
+    connect(widgetmanager,&WidgetManage::getfriends,this,&BaseControl::getfriends);
     if(widgetmanager->open_Loginwindow())
     {
-        widgetmanager->open_Mainwindow();
+        //widgetmanager->open_Mainwindow();
         if(basedata->get_Log_State())
         {
             log->info("LOGWINDOW OPENED!");
@@ -112,6 +113,11 @@ void BaseControl::datareceved_login(QByteArray msg,int length)
         QJsonDocument msg;
         msg.setObject(body);
         login_socket->send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3));
+    }else if(body["type"].toString() == "allfriendsinfo")
+    {
+        basedata->set_groups(data["groups"].toArray());
+        basedata->set_friendsinfo(data["friends"].toArray());
+        widgetmanager->sendinfo_to_loginwindow(7,QJsonObject());
     }
 
     cout<<msg<<length;
@@ -135,6 +141,18 @@ void BaseControl::filereceved_login(QByteArray buf,int)
     }
 }
 
+void BaseControl::getfriends()
+{
+    QJsonObject data;
+    data.insert("account",basedata->get_user_info()->get_account());
+    QJsonObject body;
+    body.insert("type","getfriends");
+    body.insert("data",data);
+    QJsonDocument msg;
+    msg.setObject(body);
+    login_socket->send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3));
+}
+
 void BaseControl::login_finished()
 {
     if(widgetmanager->open_Mainwindow())
@@ -152,3 +170,4 @@ void BaseControl::login_finished()
         log->error("MAINWINDOW OPEN FAILED!");
     }
 }
+

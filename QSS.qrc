@@ -33,6 +33,12 @@
         <file>res/image/btn/rmaxsize.png</file>
         <file>res/image/btn/rmaxsize_hover.png</file>
         <file>res/image/btn/rmaxsize_pressed.png</file>
+        <file>res/image/btn/hide.png</file>
+        <file>res/image/btn/hide_hover.png</file>
+        <file>res/image/btn/hide_pressed.png</file>
+        <file>res/image/btn/show.png</file>
+        <file>res/image/btn/show_hover.png</file>
+        <file>res/image/btn/show_pressed.png</file>
     </qresource>
     <qresource prefix="/image/faces">
         <file>res/image/faces/boy_1.png</file>

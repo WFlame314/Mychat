@@ -7,6 +7,7 @@ Person::Person(QWidget *parent) : QWidget(parent)
     this->passwordkey="";
     this->name="";
     this->state = 0;
+    this->sign="";
 }
 
 
@@ -102,6 +103,11 @@ QString Person::get_passwordkey()
     return passwordkey;
 }
 
+QString Person::get_sign()
+{
+    return sign;
+}
+
 int Person::get_state()
 {
     return state;
@@ -120,4 +126,9 @@ void Person::set_password(QString password)
 void Person::set_account(QString account)
 {
     this->account = account;
+}
+
+void Person::set_sign(QString sign)
+{
+    this->sign = sign;
 }

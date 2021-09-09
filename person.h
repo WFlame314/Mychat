@@ -19,11 +19,13 @@ public:
     QString get_account();
     QString get_name();
     QString get_passwordkey();
+    QString get_sign();
     int get_state();
 
     void set_name(QString name);
     void set_password(QString password);
     void set_account(QString account);
+    void set_sign(QString sign);
 
 
 
@@ -36,6 +38,7 @@ private:
     QString passwordkey;
     QString account;
     QString name;
+    QString sign;
     int state;
 
 

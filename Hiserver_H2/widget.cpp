@@ -94,7 +94,7 @@ void Widget::dataReceived(QByteArray msg_data,int descriptor)
         {
             QByteArray strings=data["account"].toString().toUtf8()+'H'+data["password"].toString().toUtf8();
             QByteArray Encryptedpasswords = QCryptographicHash::hash(strings, QCryptographicHash::Md5).toHex();
-            s= "select password,nikcname from users where account=" + data["account"].toString() + ";";
+            s= "select password,nikcname,signature from users where account=" + data["account"].toString() + ";";
             qDebug()<<s;
             flashsql=false;
             if(query.exec(s))
@@ -114,6 +114,7 @@ void Widget::dataReceived(QByteArray msg_data,int descriptor)
                 else if(query.value(0).toString() == QString(Encryptedpasswords))
                 {
                     QString name = query.value(1).toString().toUtf8();
+                    QString sign = query.value(2).toString().toUtf8();
                     s = "select uuid from "+ data["account"].toString()+"_devices where uuid='" + data["uuid"].toString()+"';";
                     if(query.exec(s))
                     {
@@ -129,6 +130,7 @@ void Widget::dataReceived(QByteArray msg_data,int descriptor)
                     backdata.insert("state","login_success");
                     backdata.insert("account",data["account"].toString());
                     backdata.insert("name",name);
+                    backdata.insert("sign",sign);
                     if(data["ifremember"].toBool())
                     {
                         QString key = getrandkey();
@@ -185,11 +187,12 @@ void Widget::dataReceived(QByteArray msg_data,int descriptor)
                     if(query.exec(s))
                     {
                         QJsonObject backbody,backdata;
-                        s = "select nikcname from users where account=" + data["account"].toString() + ";";
+                        s = "select nikcname,signature from users where account=" + data["account"].toString() + ";";
                         if(query.exec(s))
                         {
                             query.next();
                             backdata.insert("name",query.value(0).toString());
+                            backdata.insert("sign",query.value(1).toString());
                         }
                         backdata.insert("state","key_login_success");
                         backdata.insert("passwordkey",key);
@@ -224,6 +227,51 @@ void Widget::dataReceived(QByteArray msg_data,int descriptor)
             ContentListWidget->addItem("startsend");
             sendlogin_files(data["account"].toString(),descriptor);
         }
+    }else if(body["type"] == "getfriends")
+    {
+        QJsonObject backbody,backdata;
+        ContentListWidget->addItem("getfriends");
+        QSqlQuery query;
+        QString s;
+        s = "select groupid,groupname,grouptype from " + data["account"].toString() +"_groups";
+        if(query.exec(s))
+        {
+            QJsonArray groups;
+            while(query.next())
+            {
+                QJsonObject group;
+                group.insert("groupid",query.value(0).toInt());
+                group.insert("groupname",query.value(1).toString());
+                group.insert("grouptype",query.value(2).toInt());
+                groups.push_back(group);
+            }
+            backdata.insert("groups",groups);
+        }
+        s = "select fiendaccount,friendremark,friendname,friendgroupid,lastwords,noreadcount,chatflag from " + data["account"].toString() +"_friends";
+        if(query.exec(s))
+        {
+            QJsonArray friends;
+            while(query.next())
+            {
+                QJsonObject outfriend;
+                outfriend.insert("fiendaccount",query.value(0).toString());
+                outfriend.insert("friendremark",query.value(1).toString());
+                outfriend.insert("friendname",query.value(2).toString());
+                outfriend.insert("friendgroupid",query.value(3).toInt());
+                outfriend.insert("lastwords",query.value(4).toString());
+                outfriend.insert("noreadcount",query.value(5).toInt());
+                outfriend.insert("chatflag",query.value(6).toInt());
+                friends.push_back(outfriend);
+            }
+            backdata.insert("friends",friends);
+        }
+        backbody.insert("type","allfriendsinfo");
+        backbody.insert("data",backdata);
+        QJsonDocument msg;
+        msg.setObject(backbody);
+        QString backmsg(msg.toJson(QJsonDocument::Compact));
+        send(char(2)+msg.toJson(QJsonDocument::Compact)+char(3),descriptor);
+        ContentListWidget->addItem("好友信息发送成功！");
     }
 
     ContentListWidget->scrollToBottom();

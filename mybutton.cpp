@@ -4,6 +4,7 @@ MyButton::MyButton(QWidget *parent):QPushButton(parent)
 {
     showhovericon = false;
     showpressedicon = false;
+    name = "";
     this->setAttribute(Qt::WA_Hover,true);
     this->installEventFilter(this);
 }
@@ -27,6 +28,15 @@ void MyButton::setPressedIcon(QIcon ico)
     showpressedicon = true;
 }
 
+void MyButton::setName(QString name)
+{
+    this->name = name;
+    if(name!="")
+    {
+        this->setToolTip(name);
+    }
+}
+
 void MyButton::removeHoverIcon()
 {
     showhovericon = false;
@@ -35,6 +45,11 @@ void MyButton::removeHoverIcon()
 void MyButton::removePressIcon()
 {
     showpressedicon = false;
+}
+
+QString MyButton::getName()
+{
+    return name;
 }
 
 bool MyButton::eventFilter(QObject *object, QEvent *event)

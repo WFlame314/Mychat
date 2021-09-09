@@ -82,6 +82,15 @@ QString GlobalData::get_uuid()
     return result;
 }
 
+QJsonArray GlobalData::get_groups()
+{
+    return groups;
+}
+
+QJsonArray GlobalData::get_friendsinfo()
+{
+    return friendsinfo;
+}
 
 void GlobalData::set_Login_State(bool state)
 {
@@ -122,6 +131,17 @@ void GlobalData::set_Login_Type(int type)
 {
     login_type = type;
 }
+
+void GlobalData::set_groups(QJsonArray data)
+{
+    groups = data;
+}
+
+void GlobalData::set_friendsinfo(QJsonArray data)
+{
+    friendsinfo = data;
+}
+
 
 
 

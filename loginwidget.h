@@ -20,6 +20,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QTimer>
 #include <QJsonObject>
+#include <QJsonArray>
 #include "globaldata.h"
 #include "logfiles.h"
 #include "personlist.h"
@@ -110,6 +111,7 @@ public slots:
 
 signals:
     void trylogin(int type,bool ifremember);
+    void file_done();
     void login_finished();
 };
 

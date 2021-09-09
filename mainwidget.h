@@ -10,6 +10,7 @@
 #include <QMouseEvent>
 #include <QGraphicsDropShadowEffect>
 #include <QTimer>
+#include <QLabel>
 #include "globaldata.h"
 #include "logfiles.h"
 #include "personlist.h"
@@ -50,10 +51,13 @@ private:
      * 窗口中组件
      */
     QLabel *LOGO_label;
+    QLabel *name_label;
+    QPushButton *sign_btn;
     MyButton *minisize_btn;
     MyButton *close_btn;
     MyButton *maxsize_btn;
-    MyButton *hide_btn;
+    MyButton *hide_show_btn;
+    MyButton *face_btn;
 
 };
 

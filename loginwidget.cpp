@@ -829,6 +829,8 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
     }else if(type == 3)
     {
         connect_timer->stop();
+        basedata->get_user_info()->set_name(msg["name"].toString());
+        basedata->get_user_info()->set_sign(msg["sign"].toString());
         note->setText("请稍等...");
         login_process = 3;
         QDir dir;
@@ -880,6 +882,8 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
     }else if(type == 4)
     {
         cout<<"登录成功";
+        basedata->get_user_info()->set_name(msg["name"].toString());
+        basedata->get_user_info()->set_sign(msg["sign"].toString());
         connect_timer->stop();
         note->setText("请稍等...");
         login_process = 3;
@@ -954,6 +958,9 @@ void LoginWidget::getinfo(int type, QJsonObject msg)
         creatbatfile(basedata->get_user_info()->get_account());
         run(1);
     }else if(type == 6)
+    {
+        emit file_done();
+    }else if(type == 7)
     {
         note->setText("登录完成！");
         emit login_finished();

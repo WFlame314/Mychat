@@ -44,6 +44,7 @@ public slots:
     void filereceved_login(QByteArray,int);
     void connected_to_server_login();
     void login_finished();
+    void getfriends();
 
 };
 #endif // BASECONTROL_H

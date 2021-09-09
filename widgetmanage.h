@@ -28,10 +28,12 @@ private:
 signals:
     void trylogin_signal(int type,bool ifremember);
     void login_finished();
+    void getfriends();
 
 public slots:
     void trylogin_slot(int type,bool ifremember);
     void login_finished_slot();
+    void file_done();
 
 };
 
