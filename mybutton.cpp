@@ -7,13 +7,23 @@ MyButton::MyButton(QWidget *parent):QPushButton(parent)
     name = "";
     this->setAttribute(Qt::WA_Hover,true);
     this->installEventFilter(this);
+    iconsize = this->size();
 }
 
 void MyButton::setNormalIcon(QIcon ico)
 {
     normalicon = ico;
     this->setIcon(normalicon);
-    this->setIconSize(this->size());
+    iconsize = this->size();
+    this->setIconSize(iconsize);
+}
+
+void MyButton::setNormalIcon(QIcon ico,QSize size)
+{
+    normalicon = ico;
+    this->setIcon(normalicon);
+    iconsize = size;
+    this->setIconSize(iconsize);
 }
 
 void MyButton::setHoverIcon(QIcon ico)
@@ -54,7 +64,7 @@ QString MyButton::getName()
 
 bool MyButton::eventFilter(QObject *object, QEvent *event)
 {
-    this->setIconSize(this->size());
+    this->setIconSize(iconsize);
     if(event->type() == QEvent::HoverEnter)
     {
         if(showhovericon)

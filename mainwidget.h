@@ -11,6 +11,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QTimer>
 #include <QLabel>
+#include <QLineEdit>
 #include "globaldata.h"
 #include "logfiles.h"
 #include "personlist.h"
@@ -38,6 +39,18 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
+    void initAppBox();
+
+protected slots:
+    void chatting_select();
+    void friends_select();
+    void groups_select();
+    void search_select();
+    void apps_select();
+    void setting_select();
+
+signals:
+    void readytoclose();
 
 private:
     Ui::MainWidget *ui;
@@ -52,12 +65,23 @@ private:
      */
     QLabel *LOGO_label;
     QLabel *name_label;
+
+    QLineEdit *sign_edit;
+
     QPushButton *sign_btn;
     MyButton *minisize_btn;
     MyButton *close_btn;
     MyButton *maxsize_btn;
     MyButton *hide_show_btn;
     MyButton *face_btn;
+    MyButton *chating_btn;
+    MyButton *friends_btn;
+    MyButton *groups_btn;
+    MyButton *search_btn;
+    MyButton *apps_btn;
+    MyButton *setting_btn;
+
+    QListWidget *appbox;
 
 };
 

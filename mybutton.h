@@ -11,6 +11,7 @@ class MyButton : public QPushButton
 public:
     MyButton(QWidget *parent = nullptr);
     void setNormalIcon(QIcon ico);
+    void setNormalIcon(QIcon ico,QSize size);
     void setHoverIcon(QIcon ico);
     void setPressedIcon(QIcon ico);
     void setName(QString name);
@@ -29,6 +30,7 @@ private:
     QIcon hovericon;
     QIcon pressedicon;
     QString name;
+    QSize iconsize;
 };
 
 #endif // MYBUTTON_H

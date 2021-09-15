@@ -24,6 +24,7 @@ bool WidgetManage::open_Mainwindow()
 {
     if((mainwindow = new MainWidget(basedata,log)))
     {
+        connect(mainwindow,&MainWidget::readytoclose,this,&WidgetManage::mainreadytoclose);
         cout<<"yes";
         mainwindow->show();
         return true;
@@ -50,6 +51,8 @@ void WidgetManage::sendinfo_to_loginwindow(int type, QJsonObject msg)
 void WidgetManage::login_finished_slot()
 {
     loginwindow->close();
+    //delete loginwindow;
+    //loginwindow = nullptr;
     emit login_finished();
 }
 
@@ -58,3 +61,10 @@ void WidgetManage::file_done()
     emit getfriends();
 }
 
+void WidgetManage::mainreadytoclose()
+{
+    mainwindow->close();
+    //delete mainwindow;
+    //mainwindow = nullptr;
+    emit maincloseed();
+}

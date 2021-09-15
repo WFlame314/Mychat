@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/qss">
         <file>userliststyle.qss</file>
+        <file>appboxstyle.qss</file>
     </qresource>
     <qresource prefix="/image/btn">
         <file>res/image/btn/login_close.png</file>
@@ -39,6 +40,18 @@
         <file>res/image/btn/show.png</file>
         <file>res/image/btn/show_hover.png</file>
         <file>res/image/btn/show_pressed.png</file>
+        <file>res/image/btn/chatting.png</file>
+        <file>res/image/btn/apps.png</file>
+        <file>res/image/btn/apps_select.png</file>
+        <file>res/image/btn/chatting_select.png</file>
+        <file>res/image/btn/friends.png</file>
+        <file>res/image/btn/friends_select.png</file>
+        <file>res/image/btn/groups.png</file>
+        <file>res/image/btn/groups_select.png</file>
+        <file>res/image/btn/search.png</file>
+        <file>res/image/btn/search_select.png</file>
+        <file>res/image/btn/setting.png</file>
+        <file>res/image/btn/setting_select.png</file>
     </qresource>
     <qresource prefix="/image/faces">
         <file>res/image/faces/boy_1.png</file>
