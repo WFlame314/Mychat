@@ -247,20 +247,25 @@ void Widget::dataReceived(QByteArray msg_data,int descriptor)
             }
             backdata.insert("groups",groups);
         }
-        s = "select fiendaccount,friendremark,friendname,friendgroupid,lastwords,noreadcount,chatflag from " + data["account"].toString() +"_friends";
+        s = "select friendaccount,friendremark,friendname,friendgroupid,lastwords,noreadcount,chatflag,lastchattime,signature "
+            "from " + data["account"].toString() +"_friends,users "
+            "where friendaccount=users.account "
+            "ORDER BY `lastchattime` DESC";
         if(query.exec(s))
         {
             QJsonArray friends;
             while(query.next())
             {
                 QJsonObject outfriend;
-                outfriend.insert("fiendaccount",query.value(0).toString());
+                outfriend.insert("friendaccount",query.value(0).toString());
                 outfriend.insert("friendremark",query.value(1).toString());
                 outfriend.insert("friendname",query.value(2).toString());
                 outfriend.insert("friendgroupid",query.value(3).toInt());
                 outfriend.insert("lastwords",query.value(4).toString());
                 outfriend.insert("noreadcount",query.value(5).toInt());
                 outfriend.insert("chatflag",query.value(6).toInt());
+                outfriend.insert("lastchattime",query.value(7).toDateTime().toString());
+                outfriend.insert("friendsignature",query.value(8).toString());
                 friends.push_back(outfriend);
             }
             backdata.insert("friends",friends);

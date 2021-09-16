@@ -82,6 +82,12 @@ void MainWidget::init()
     setting_btn = new MyButton();
     connect(setting_btn,&MyButton::clicked,this,&MainWidget::setting_select);
 
+    //好友信息区域
+    chattingbox = new QListWidget(this);
+    chattingbox->show();
+    chattingarea = new PersonList(chattingbox);
+    chattingarea->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+
 
     init_Size();
     init_Pos();
@@ -127,6 +133,11 @@ void MainWidget::init_Size()
     search_btn->setFixedSize(appbox->width(),appbox->width());
     apps_btn->setFixedSize(appbox->width(),appbox->width());
     setting_btn->setFixedSize(appbox->width(),appbox->width());
+
+    //好友信息区域
+    chattingbox->setFixedSize(200,this->height()-126);
+
+    chattingarea->setFixedSize(chattingbox->width(),chattingbox->height());
 
 }
 
@@ -189,6 +200,8 @@ void MainWidget::init_Pos()
     setting_Item->setSizeHint(QSize(chating_btn->width(),chating_btn->width()));
     appbox->setItemWidget(setting_Item,setting_btn);
 
+    //好友信息区域
+    chattingbox->move(appbox->x()+appbox->width(),face_btn->y()+face_btn->height()+20);
 
 }
 
@@ -264,10 +277,10 @@ void MainWidget::init_Style()
                              "}");
 
     //应用区域
-    QFile stylefile(":/qss/appboxstyle.qss");
-    stylefile.open(QFile::ReadOnly);
-    appbox->setStyleSheet(stylefile.readAll());
-    stylefile.close();
+    QFile appstylefile(":/qss/appboxstyle.qss");
+    appstylefile.open(QFile::ReadOnly);
+    appbox->setStyleSheet(appstylefile.readAll());
+    appstylefile.close();
     appbox->setFocusPolicy(Qt::NoFocus);       // 去除item选中时的虚线边框
     appbox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);//水平滚动条关闭
     /*appbox->setStyleSheet("QListWidget{"
@@ -275,6 +288,17 @@ void MainWidget::init_Style()
                           "border: none;"
                           "}");*/
     chatting_select();
+
+    //好友信息区域
+    chattingbox->setStyleSheet("QListWidget{"
+                               "background: rgba(255,255,255,0.5);"
+                               "border: none;"
+                               "}");
+    QFile chattingstylefile(":/qss/userliststyle.qss");
+    chattingstylefile.open(QFile::ReadOnly);
+    chattingarea->setStyleSheet(chattingstylefile.readAll());
+    chattingstylefile.close();
+    initchattingbox();
 }
 
 void MainWidget::paintEvent(QPaintEvent *)
@@ -356,6 +380,16 @@ void MainWidget::initAppBox()
     setting_btn->setStyleSheet("QPushButton{"
                                "border-radius: 1px transparent;"
                                "}");
+}
+
+void MainWidget::initchattingbox()
+{
+    QMap<QString,personinfo> t = basedata->get_chattingfriendsinfo();
+    for(auto i = t.begin(); i!=t.end(); i++)
+    {
+        Person *buddy = new Person(personinfo(i.value().account,i.value().name,i.value().remarkname,i.value().sign,i.value().lastwords,i.value().datetime,i.value().groupid,i.value().noreadcount,i.value().chatflag),1);
+        chattingarea->addchatting(buddy);
+    }
 }
 
 void MainWidget::chatting_select()

@@ -48,6 +48,16 @@ void PersonList::addperson(QString groupname,Person *buddy)
     connect(buddy,SIGNAL(deleteuser_btn_clicked(QString)),this,SLOT(deleteuser_btn_clicked(QString)));
 }
 
+void PersonList::addchatting(Person *buddy)
+{
+    QListWidgetItem *newItem=new QListWidgetItem();    //创建一个Item
+    newItem->setSizeHint(QSize(this->width(),80));//设置宽度、高度
+    newItem->setTextAlignment(Qt::AlignBottom);
+    this->addItem(newItem);         //加到QListWidget中
+    this->setItemWidget(newItem,buddy);
+}
+
+
 void PersonList::deleteuser_btn_clicked(QString account)
 {
     if(personsMap.find(account) != personsMap.end())

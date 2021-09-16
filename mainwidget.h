@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QListWidget>
+#include <QStackedWidget>
 #include <QPainter>
 #include <QtMath>
 #include <QPixmap>
@@ -12,12 +13,14 @@
 #include <QTimer>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMap>
 #include "globaldata.h"
 #include "logfiles.h"
 #include "personlist.h"
 #include "Loading.h"
 #include "mytools.h"
 #include "mybutton.h"
+#include "personinfo.h"
 
 namespace Ui {
 class MainWidget;
@@ -40,6 +43,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
     void initAppBox();
+    void initchattingbox();
 
 protected slots:
     void chatting_select();
@@ -81,7 +85,12 @@ private:
     MyButton *apps_btn;
     MyButton *setting_btn;
 
+    QStackedWidget *rightspace;
+
     QListWidget *appbox;
+    QListWidget *chattingbox;
+
+    PersonList *chattingarea;
 
 };
 

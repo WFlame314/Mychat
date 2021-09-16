@@ -13,6 +13,7 @@ public:
     PersonList(QListWidget *parent = 0);
     void addgroup(QString);
     void addperson(QString groupname,Person *buddy);
+    void addchatting(Person *buddy);
     void clearitem();
     bool finduser(QString account);
 

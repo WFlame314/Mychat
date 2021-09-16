@@ -74,6 +74,7 @@
         <file>res/image/icon/user_select.png</file>
         <file>res/image/icon/mask.png</file>
         <file>res/image/icon/hi.png</file>
+        <file>res/image/icon/notice.png</file>
     </qresource>
     <qresource prefix="/image/windows">
         <file>res/image/windows/def_background.jpeg</file>

@@ -7,7 +7,9 @@
 #include <QProcess>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QMap>
 #include "person.h"
+#include "personinfo.h"
 
 class GlobalData
 {
@@ -34,8 +36,10 @@ private:
      */
     QIcon *LOGO;
     Person *user;
-    QJsonArray groups;
-    QJsonArray friendsinfo;
+    QMap<int,QString> groups;
+    QMap<int,int> groupstype;
+    QMap<QString,personinfo> friendsinfo;
+    QMap<QString,personinfo> chattingfriendinfo;
 
 public:
     GlobalData();
@@ -50,8 +54,9 @@ public:
     Person * get_user_info();
     int get_Login_Type();
     QString get_uuid();
-    QJsonArray get_groups();
-    QJsonArray get_friendsinfo();
+    QMap<int,QString> get_groups();
+    QMap<QString,personinfo> get_friendsinfo();
+    QMap<QString,personinfo> get_chattingfriendsinfo();
 
     void set_Connect_State(bool state);
     void set_Login_State(bool state);

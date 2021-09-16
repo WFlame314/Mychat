@@ -82,14 +82,19 @@ QString GlobalData::get_uuid()
     return result;
 }
 
-QJsonArray GlobalData::get_groups()
+QMap<int,QString> GlobalData::get_groups()
 {
     return groups;
 }
 
-QJsonArray GlobalData::get_friendsinfo()
+QMap<QString,personinfo> GlobalData::get_friendsinfo()
 {
     return friendsinfo;
+}
+
+QMap<QString,personinfo> GlobalData::get_chattingfriendsinfo()
+{
+    return chattingfriendinfo;
 }
 
 void GlobalData::set_Login_State(bool state)
@@ -134,12 +139,29 @@ void GlobalData::set_Login_Type(int type)
 
 void GlobalData::set_groups(QJsonArray data)
 {
-    groups = data;
+    for(int i = 0; i < data.size(); i++)
+    {
+        QJsonObject t = data.at(i).toObject();
+        groups.insert(t["groupid"].toInt(),t["groupname"].toString());
+        groupstype.insert(t["groupid"].toInt(),t["grouptype"].toInt());
+    }
 }
 
 void GlobalData::set_friendsinfo(QJsonArray data)
 {
-    friendsinfo = data;
+    for(int i = 0; i < data.size(); i++)
+    {
+        QJsonObject t = data.at(i).toObject();
+        personinfo tp(t["friendaccount"].toString(),t["friendname"].toString(),
+                      t["friendremark"].toString(),t["friendsignature"].toString(),
+                      t["lastwords"].toString(),t["lastchattime"].toString(),
+                      t["friendgroupid"].toInt(),t["noreadcount"].toInt(),t["chatflag"].toInt()==1?true:false);
+        if(t["chatflag"].toInt()==1)
+        {
+            chattingfriendinfo.insert(t["friendaccount"].toString(),tp);
+        }
+        friendsinfo.insert(t["friendaccount"].toString(),tp);
+    }
 }
 
 

@@ -27,6 +27,7 @@ SOURCES += \
     mybutton.cpp \
     mytools.cpp \
     person.cpp \
+    personinfo.cpp \
     personlist.cpp \
     socket.cpp \
     widgetmanage.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     mybutton.h \
     mytools.h \
     person.h \
+    personinfo.h \
     personlist.h \
     qrencode.h \
     socket.h \
