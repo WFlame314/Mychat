@@ -37,12 +37,16 @@ Person::Person(QString account,QString passwordkey,int state,QWidget *parent) : 
     init_userlist_buddy();
 }
 
-Person::Person(personinfo info,int type)
+Person::Person(personinfo info,QString account,int type,QWidget *parent) : QWidget(parent)
 {
     face_image = new QLabel(this);
     name_label = new QLabel(this);
     sign_words_label = new  QLabel(this);
+    textmask = new QLabel(this);
+    textmask->show();
+    maskpix.fromImage(QImage(":/image/icon/res/image/icon/mask2.png"));
     this->info = info;
+    this->account = account;
     if(type==1)
     {
         noreadcount_btn = new MyButton(this);
@@ -99,21 +103,24 @@ void Person::init_chatting_buddy()
 {
     face_image->setFixedSize(40,40);
     name_label->setFixedSize(140,20);
-    sign_words_label->setFixedSize(140,20);
+    sign_words_label->setFixedSize(110,20);
     noreadcount_btn->setFixedSize(20,20);
     time_label->setFixedSize(40,20);
+    textmask->setFixedSize(30,this->height());
 
     face_image->move(10,5);
     name_label->move(10+face_image->width()+10,5);
     sign_words_label->move(10+face_image->width()+10,5+name_label->height());
-    noreadcount_btn->move(10+face_image->width()+10+name_label->width()-30,15);
+    noreadcount_btn->move(10+face_image->width()+10+name_label->width()-35,sign_words_label->y());
     time_label->move(noreadcount_btn->x()-5,name_label->y());
+    textmask->move(60,0);
+    textmask->setText("11111111111111");
 
     name_label->setText(info.remarkname==""?info.name:info.remarkname);
     sign_words_label->setText(info.lastwords);
     noreadcount_btn->setText(QString("%1").arg(info.noreadcount));
     QDateTime dt;
-    dt.fromString(info.datetime);
+    dt=QDateTime::fromString(info.datetime,Qt::ISODate);
     if(dt.date()==QDateTime::currentDateTime().date())
     {
         time_label->setText(dt.time().toString("h:mm"));
@@ -127,28 +134,34 @@ void Person::init_chatting_buddy()
 
 
     face_image->setStyleSheet(QString("QLabel{"
-                                      "border-image: url(./files/All_user/image/faces/%1.jpg);"
+                                      "border-image: url(./files/%1/images/faces/%2.jpg);"
                                       "border-radius: 20px;"
                                       "border: none;"
-                                      "}").arg(account));
+                                      "}").arg(account).arg(info.account));
     name_label->setStyleSheet("QLabel{"
                               "border-radius: 5px transparent;"
                               "background: rgba(0,0,0,0);"
-                              "color: rgb(50,50,50);"
+                              "color: rgb(0,0,0);"
+                              "font-size: 15px;"
+                              "font-weight: 600;"
                               "}");
     sign_words_label->setStyleSheet("QLabel{"
-                                 "border-radius: 5px transparent;"
-                                 "background: rgba(0,0,0,0);"
-                                 "color: rgb(50,50,50);"
-                                 "}");
+                                    "border-radius: 5px transparent;"
+                                    "background: rgba(0,0,0,0);"
+                                    "color: rgb(100,100,100);"
+                                    "font-size: 11px;"
+                                    "font-weight: 200;"
+                                    "}");
     time_label->setStyleSheet("QLabel{"
-                              "border-radius: 5px transparent;"
-                              "background: rgba(0,0,0,0);"
                               "color: rgb(50,50,50);"
+                              "font-size: 12px"
                               "}");
-    noreadcount_btn->setNormalIcon(QIcon(":/image/icon/res/image/icon/notice.png"));
+    //noreadcount_btn->setNormalIcon(QIcon(":/image/icon/res/image/icon/notice.png"));
     noreadcount_btn->setStyleSheet("QPushButton{"
+                                   "background: rgb(216,30,6);"
                                    "border-radius: 10px transparent;"
+                                   "border: 1px;"
+                                   "color: rgb(255,255,255);"
                                    "}");
 
 }

@@ -135,7 +135,7 @@ void MainWidget::init_Size()
     setting_btn->setFixedSize(appbox->width(),appbox->width());
 
     //好友信息区域
-    chattingbox->setFixedSize(200,this->height()-126);
+    chattingbox->setFixedSize(195,this->height()-126);
 
     chattingarea->setFixedSize(chattingbox->width(),chattingbox->height());
 
@@ -314,6 +314,17 @@ void MainWidget::paintEvent(QPaintEvent *)
     painter.setPen(QColor(50,50,50,180));
     painter.drawLine(240,6,240,this->height()-6);
 
+//    QImage *a;
+//    a = new QImage(50,50,QImage::Format_ARGB32);
+//    QPainter tst(a);
+//    for(int i = 0 ;i<50;i++)
+//    {
+//        tst.setPen(QColor(255,255,255,5.1*i));
+//        tst.drawLine(i,0,i,49);
+//    }
+//    a->save("./out.png");
+
+
     QColor color(0, 0, 0, 50);
     for(int i=0; i<5; i++)
     {
@@ -387,7 +398,7 @@ void MainWidget::initchattingbox()
     QMap<QString,personinfo> t = basedata->get_chattingfriendsinfo();
     for(auto i = t.begin(); i!=t.end(); i++)
     {
-        Person *buddy = new Person(personinfo(i.value().account,i.value().name,i.value().remarkname,i.value().sign,i.value().lastwords,i.value().datetime,i.value().groupid,i.value().noreadcount,i.value().chatflag),1);
+        Person *buddy = new Person(personinfo(i.value().account,i.value().name,i.value().remarkname,i.value().sign,i.value().lastwords,i.value().datetime,i.value().groupid,i.value().noreadcount,i.value().chatflag),basedata->get_user_info()->get_account(),1);
         chattingarea->addchatting(buddy);
     }
 }

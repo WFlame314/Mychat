@@ -16,7 +16,7 @@ public:
     explicit Person(QWidget *parent = nullptr);
     Person(QString account,QString name,QString passwordkey,int state,QWidget *parent = nullptr);
     Person(QString account,QString passwordkey,int state,QWidget *parent = nullptr);
-    Person(personinfo person,int type);
+    Person(personinfo person,QString account,int type,QWidget *parent = nullptr);
 
     void init_userlist_buddy();
     void init_chatting_buddy();
@@ -42,6 +42,7 @@ private:
     QLabel *account_label;
     QLabel *time_label;
     QLabel *sign_words_label;
+    QLabel *textmask;
     MyButton *noreadcount_btn;
     MyButton *delete_btn;
 
@@ -51,6 +52,7 @@ private:
     QString sign;
     int state;
 
+    QPixmap maskpix;
 
 signals:
     void deleteuser_btn_clicked(QString);

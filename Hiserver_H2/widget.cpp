@@ -264,7 +264,7 @@ void Widget::dataReceived(QByteArray msg_data,int descriptor)
                 outfriend.insert("lastwords",query.value(4).toString());
                 outfriend.insert("noreadcount",query.value(5).toInt());
                 outfriend.insert("chatflag",query.value(6).toInt());
-                outfriend.insert("lastchattime",query.value(7).toDateTime().toString());
+                outfriend.insert("lastchattime",query.value(7).toDateTime().toString(Qt::ISODate));
                 outfriend.insert("friendsignature",query.value(8).toString());
                 friends.push_back(outfriend);
             }
